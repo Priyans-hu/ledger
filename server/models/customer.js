@@ -1,4 +1,4 @@
-const { pool } = require('../dbConfig');
+const { mysqlConnection } = require('../config/');
 
 const createCustomerTable = async () => {
     try {
@@ -16,7 +16,7 @@ const createCustomerTable = async () => {
             UNIQUE KEY unique_store_phone (storeId, phoneNumber)
     )
     `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         await client.query(createCustomerTableQuery);
         console.log('Customer table created successfully');
         client.release();

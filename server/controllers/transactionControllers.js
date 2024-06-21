@@ -1,4 +1,4 @@
-const { pool } = require('../dbConfig');
+const { mysqlConnection } = require('../config/');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
@@ -14,7 +14,7 @@ const createTransaction = async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(createTransactionQuery, [amount, description, date, type, method, storeId, customerId]);
         client.release();
 
@@ -35,7 +35,7 @@ const getTransactions = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId]);
         client.release();
 
@@ -56,7 +56,7 @@ const getTransactionsByDate = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND date = $2`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId, date]);
         client.release();
 
@@ -77,7 +77,7 @@ const getTransactionsByPeriod = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND date BETWEEN $2 AND $3`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId, startDate, endDate]);
         client.release();
 
@@ -98,7 +98,7 @@ const getTransactionsByCustomer = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND customerId = $2`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId, customerId]);
         client.release();
 
@@ -119,7 +119,7 @@ const getAllCreditTransactions = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND type = 'credit'`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId]);
         client.release();
 
@@ -140,7 +140,7 @@ const getAllDebitTransactions = async (req, res) => {
 
     try {
         const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND type = 'debit'`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getTransactionsQuery, [storeId]);
         client.release();
 

@@ -1,4 +1,4 @@
-const { pool } = require('../dbConfig');
+const { mysqlConnection } = require('../config/');
 
 const createTransactionTable = async () => {
     try {
@@ -18,7 +18,7 @@ const createTransactionTable = async () => {
             FOREIGN KEY (customerId) REFERENCES customer(customerId)
         )
     `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         await client.query(createTransactionTableQuery);
         console.log('Transaction table created successfully');
         client.release();

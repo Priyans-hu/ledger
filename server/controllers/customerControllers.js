@@ -1,4 +1,4 @@
-const { pool } = require('../dbConfig');
+const { mysqlConnection } = require('../config/');
 
 // Create a new customer
 const createCustomer = async (req, res) => {
@@ -14,7 +14,7 @@ const createCustomer = async (req, res) => {
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(createCustomerQuery, [storeId, phoneNumber, name, email, address]);
         client.release();
 
@@ -35,7 +35,7 @@ const getCustomerById = async (req, res) => {
 
     try {
         const getCustomerQuery = `SELECT * FROM customer WHERE customerId = $1`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getCustomerQuery, [customerId]);
         client.release();
 
@@ -60,7 +60,7 @@ const getAllCustomers = async (req, res) => {
 
     try {
         const getCustomersQuery = `SELECT * FROM customer WHERE storeId = $1`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(getCustomersQuery, [storeId]);
         client.release();
 
@@ -87,7 +87,7 @@ const updateCustomer = async (req, res) => {
             WHERE customerId = $6
             RETURNING *
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(updateCustomerQuery, [phoneNumber, name, email, address, totalSpent, customerId]);
         client.release();
 
@@ -112,7 +112,7 @@ const deleteCustomer = async (req, res) => {
 
     try {
         const deleteCustomerQuery = `DELETE FROM customer WHERE customerId = $1 RETURNING *`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(deleteCustomerQuery, [customerId]);
         client.release();
 

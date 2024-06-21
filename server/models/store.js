@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { pool } = require('../dbConfig');
+const { mysqlConnection } = require('../config/');
 
 const createStoreTable = async () => {
     try {
@@ -13,7 +13,7 @@ const createStoreTable = async () => {
                 updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
             )
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         await client.query(createStoreTableQuery);
         console.log('Store table created successfully');
         client.release();
@@ -35,7 +35,7 @@ const createStore = async (storeName, phoneNumber, auth) => {
             VALUES ($1, $2, $3)
             RETURNING *
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
         console.log('Store inserted successfully:', rows[0]);
         client.release();

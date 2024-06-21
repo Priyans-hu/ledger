@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { pool } = require('../config/index');
+const { mysqlConnection } = require('../config/');
 
 // Secret key for JWT
 const jwtSecret = 'your_jwt_secret_key';
@@ -20,7 +20,7 @@ const registerStore = async (req, res) => {
             VALUES ($1, $2, $3)
             RETURNING *
         `;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
         client.release();
 
@@ -41,7 +41,7 @@ const loginStore = async (req, res) => {
 
     try {
         const findStoreQuery = `SELECT * FROM store WHERE phoneNumber = $1`;
-        const client = await pool.connect();
+        const client = await mysqlConnection.connect();
         const { rows } = await client.query(findStoreQuery, [phoneNumber]);
         client.release();
 
