@@ -16,7 +16,7 @@
 
 ## **🛠 Tech Stack**
 
-- **Frontend**: React, Tailwind CSS
+- **Frontend**: React, Tailwind CSS, Material-UI
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB, PostgreSQL
 - **Authentication**: Firebase Authentication (optional)
