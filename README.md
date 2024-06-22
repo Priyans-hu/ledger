@@ -2,7 +2,7 @@
 
 **Ledger** is a comprehensive web application designed to streamline shop management for shopkeepers. With features like customer management, expense tracking, invoice generation, payment tracking, and detailed sales analytics, Ledger aims to simplify and enhance the daily operations of small businesses.
 
-![Ledger Banner](path/to/banner/image)
+![Ledger Banner](banner.avif)
 
 ## **✨ Features**
 
