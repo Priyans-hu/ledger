@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const mysql = require('mysql2/promise');
+const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -13,20 +13,25 @@ mongoose.connect(process.env.MONGO_URI, {
     .catch((err) => console.error('MongoDB connection error:', err));
 
 // MySQL connection
+const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
+});
+
+const promisePool = pool.promise();
+
 const mysqlConnection = async () => {
     try {
-        const connection = await mysql.createConnection({
-            host: process.env.MYSQL_HOST,
-            user: process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE
-        });
+        const promisePool = pool.promise(); 
+        const [rows, fields] = await promisePool.query('SELECT 1');
         console.log('MySQL connected successfully');
-        return connection;
+        return promisePool;
     } catch (err) {
         console.error('MySQL connection error:', err);
         throw err;
     }
 };
 
-module.exports = { mongoose, mysqlConnection };
+module.exports = { mongoose, mysqlConnection, promisePool };

@@ -1,9 +1,14 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { mysqlConnection } = require('../config/');
+const { promisePool } = require('../config/');
 
 // Secret key for JWT
 const jwtSecret = 'your_jwt_secret_key';
+
+const hashPassword = async (password) => {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+};
 
 // Register controller
 const registerStore = async (req, res) => {
@@ -17,14 +22,12 @@ const registerStore = async (req, res) => {
         const hashedPassword = await hashPassword(auth);
         const createStoreQuery = `
             INSERT INTO store (storeName, phoneNumber, auth)
-            VALUES ($1, $2, $3)
-            RETURNING *
+            VALUES (?, ?, ?)
         `;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
-        client.release();
+        const [result] = await promisePool.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
+        const newStore = { id: result.insertId, storeName, phoneNumber };
 
-        res.status(201).json({ message: 'Store registered successfully', store: rows[0] });
+        res.status(201).json({ message: 'Store registered successfully', store: newStore });
     } catch (error) {
         console.error('Error registering store:', error);
         res.status(500).json({ message: 'Server error' });
@@ -40,10 +43,8 @@ const loginStore = async (req, res) => {
     }
 
     try {
-        const findStoreQuery = `SELECT * FROM store WHERE phoneNumber = $1`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(findStoreQuery, [phoneNumber]);
-        client.release();
+        const findStoreQuery = `SELECT * FROM store WHERE phoneNumber = ?`;
+        const [rows] = await promisePool.query(findStoreQuery, [phoneNumber]);
 
         if (rows.length === 0) {
             return res.status(400).json({ message: 'Store not found' });

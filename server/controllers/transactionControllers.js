@@ -1,4 +1,4 @@
-const { mysqlConnection } = require('../config/');
+const { promisePool } = require('../config/');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
@@ -11,13 +11,10 @@ const createTransaction = async (req, res) => {
     try {
         const createTransactionQuery = `
             INSERT INTO transaction (amount, description, date, type, method, storeId, customerId)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             RETURNING *
         `;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(createTransactionQuery, [amount, description, date, type, method, storeId, customerId]);
-        client.release();
-
+        const [rows] = await promisePool.query(createTransactionQuery, [amount, description, date, type, method, storeId, customerId]);
         res.status(201).json({ message: 'Transaction created successfully', transaction: rows[0] });
     } catch (error) {
         console.error('Error creating transaction:', error);
@@ -34,11 +31,8 @@ const getTransactions = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ?`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching transactions:', error);
@@ -55,11 +49,8 @@ const getTransactionsByDate = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND date = $2`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId, date]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND date = ?`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, date]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching transactions by date:', error);
@@ -76,11 +67,8 @@ const getTransactionsByPeriod = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND date BETWEEN $2 AND $3`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId, startDate, endDate]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND date BETWEEN ? AND ?`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, startDate, endDate]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching transactions by period:', error);
@@ -97,11 +85,8 @@ const getTransactionsByCustomer = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND customerId = $2`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId, customerId]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND customerId = ?`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, customerId]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching transactions by customer:', error);
@@ -118,11 +103,8 @@ const getAllCreditTransactions = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND type = 'credit'`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND type = 'credit'`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching credit transactions:', error);
@@ -139,11 +121,8 @@ const getAllDebitTransactions = async (req, res) => {
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = $1 AND type = 'debit'`;
-        const client = await mysqlConnection.connect();
-        const { rows } = await client.query(getTransactionsQuery, [storeId]);
-        client.release();
-
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND type = 'debit'`;
+        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
         res.status(200).json({ transactions: rows });
     } catch (error) {
         console.error('Error fetching debit transactions:', error);

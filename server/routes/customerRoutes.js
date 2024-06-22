@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
     createCustomer, getCustomerById, getAllCustomers, updateCustomer, deleteCustomer
-    } = require('../controllers/customerController');
+    } = require('../controllers/customerControllers');
 
 router.post('/create', createCustomer);
 router.get('/:customerId', getCustomerById);

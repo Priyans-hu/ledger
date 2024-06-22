@@ -18,19 +18,16 @@ mysqlConnection().then((connection) => {
     console.error('MySQL connection error:', err);
 });
 
-// const userRoutes = require('./routes/userRoutes');
-// const customerRoutes = require('./routes/customerRoutes');
-// const expenseRoutes = require('./routes/expenseRoutes');
-// const invoiceRoutes = require('./routes/invoiceRoutes');
-// const dashboardRoutes = require('./routes/dashboardRoutes');
-// const authRoutes = require('./routes/authRoutes');
+// Route imports
+const storeRoutes = require('./routes/storeRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 
-// app.use('/api/users', userRoutes);
-// app.use('/api/customers', customerRoutes);
-// app.use('/api/expenses', expenseRoutes);
-// app.use('/api/invoices', invoiceRoutes);
-// app.use('/api/dashboard', dashboardRoutes);
-// app.use('/api/auth', authRoutes);
+// Use routes
+app.use('/api/users', storeRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/transaction', transactionRoutes);
+
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Ledger API');
