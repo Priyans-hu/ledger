@@ -1,9 +1,9 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { promisePool } = require('../config/');
+const { postgresPool } = require('../config/');
 
-// Secret key for JWT
-const jwtSecret = 'your_jwt_secret_key';
+const jwtSecret = process.env.JWT_SECRET;
 
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
@@ -22,10 +22,11 @@ const registerStore = async (req, res) => {
         const hashedPassword = await hashPassword(auth);
         const createStoreQuery = `
             INSERT INTO store (storeName, phoneNumber, auth)
-            VALUES (?, ?, ?)
+            VALUES ($1, $2, $3)
+            RETURNING id, storeName, phoneNumber
         `;
-        const [result] = await promisePool.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
-        const newStore = { id: result.insertId, storeName, phoneNumber };
+        const { rows } = await postgresPool.query(createStoreQuery, [storeName, phoneNumber, hashedPassword]);
+        const newStore = rows[0];
 
         res.status(201).json({ message: 'Store registered successfully', store: newStore });
     } catch (error) {
@@ -43,8 +44,8 @@ const loginStore = async (req, res) => {
     }
 
     try {
-        const findStoreQuery = `SELECT * FROM store WHERE phoneNumber = ?`;
-        const [rows] = await promisePool.query(findStoreQuery, [phoneNumber]);
+        const findStoreQuery = `SELECT * FROM store WHERE phoneNumber = $1`;
+        const { rows } = await postgresPool.query(findStoreQuery, [phoneNumber]);
 
         if (rows.length === 0) {
             return res.status(400).json({ message: 'Store not found' });

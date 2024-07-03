@@ -5,12 +5,12 @@ const {
     getTransactionsByCustomer, getAllCreditTransactions, getAllDebitTransactions
     } = require('../controllers/transactionControllers');
 
-router.post('/create', createTransaction);
-router.get('/:storeId', getTransactions);
-router.get('/:storeId/date/:date', getTransactionsByDate);
-router.get('/:storeId/period/:startDate/:endDate', getTransactionsByPeriod);
-router.get('/:storeId/customer/:customerId', getTransactionsByCustomer);
-router.get('/:storeId/credit', getAllCreditTransactions);
-router.get('/:storeId/debit', getAllDebitTransactions);
+router.post('/', createTransaction);
+router.get('/', getTransactions);
+router.get('/date', getTransactionsByDate);
+router.get('/period', getTransactionsByPeriod);
+router.get('/customer', getTransactionsByCustomer);
+router.get('/credit', getAllCreditTransactions);
+router.get('/debit', getAllDebitTransactions);
 
 module.exports = router;

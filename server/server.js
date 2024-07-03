@@ -1,22 +1,17 @@
+// index.js or server.js
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
-const { mysqlConnection } = require('./config');
+const { postgresPool } = require('./config');
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
-app.use(express.json()); 
-app.use(morgan('dev')); 
-
-mysqlConnection().then((connection) => {
-    global.mysqlConnection = connection;
-}).catch((err) => {
-    console.error('MySQL connection error:', err);
-});
+app.use(express.json());
+app.use(morgan('dev'));
 
 // Route imports
 const storeRoutes = require('./routes/storeRoutes');
@@ -24,10 +19,9 @@ const customerRoutes = require('./routes/customerRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 
 // Use routes
-app.use('/api/users', storeRoutes);
-app.use('/api/customers', customerRoutes);
+app.use('/api/store', storeRoutes);
+app.use('/api/customer', customerRoutes);
 app.use('/api/transaction', transactionRoutes);
-
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Ledger API');

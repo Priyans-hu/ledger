@@ -1,6 +1,7 @@
 const { createStoreTable } = require('./store');
 const { createCustomerTable } = require('./customer');
-const { createTransactionTable} = require('./transaction');
+const { createTransactionTable } = require('./transaction');
+const { postgresPool } = require('../config/');
 
 const setupDatabase = async () => {
     try {

@@ -4,10 +4,10 @@ const {
     createCustomer, getCustomerById, getAllCustomers, updateCustomer, deleteCustomer
     } = require('../controllers/customerControllers');
 
-router.post('/create', createCustomer);
-router.get('/:customerId', getCustomerById);
-router.get('/store/:storeId', getAllCustomers);
-router.put('/:customerId', updateCustomer);
-router.delete('/:customerId', deleteCustomer);
+router.post('/', createCustomer);
+router.get('/', getCustomerById);
+router.get('/store/', getAllCustomers);
+router.put('/', updateCustomer);
+router.delete('/', deleteCustomer);
 
 module.exports = router;

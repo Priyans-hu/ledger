@@ -1,21 +1,22 @@
-const { promisePool } = require('../config/');
+require('dotenv').config();
+const { postgresPool } = require('../config/');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
-    const { amount, description, date, type, method, storeId, customerId } = req.body;
+    const { amount, description, date, type, method, storeid, customerid } = req.body;
 
-    if (!amount || !type || !method || !storeId) {
-        return res.status(400).json({ message: 'Amount, type, method, and storeId are required' });
+    if (!amount || !type || !method || !storeid) {
+        return res.status(400).json({ message: 'Amount, type, method, and storeid are required' });
     }
 
     try {
         const createTransactionQuery = `
-            INSERT INTO transaction (amount, description, date, type, method, storeId, customerId)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO transaction (amount, description, date, type, method, "storeid", "customerid")
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *
         `;
-        const [rows] = await promisePool.query(createTransactionQuery, [amount, description, date, type, method, storeId, customerId]);
-        res.status(201).json({ message: 'Transaction created successfully', transaction: rows[0] });
+        const result = await postgresPool.query(createTransactionQuery, [amount, description, date, type, method, storeid, customerid]);
+        res.status(201).json({ message: 'Transaction created successfully', transaction: result.rows[0] });
     } catch (error) {
         console.error('Error creating transaction:', error);
         res.status(500).json({ message: 'Server error' });
@@ -24,16 +25,16 @@ const createTransaction = async (req, res) => {
 
 // Get all transactions for a store
 const getTransactions = async (req, res) => {
-    const { storeId } = req.params;
+    const { storeid } = req.body;
 
-    if (!storeId) {
+    if (!storeid) {
         return res.status(400).json({ message: 'Store ID is required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ?`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching transactions:', error);
         res.status(500).json({ message: 'Server error' });
@@ -42,16 +43,16 @@ const getTransactions = async (req, res) => {
 
 // Get transactions for a specific date
 const getTransactionsByDate = async (req, res) => {
-    const { storeId, date } = req.params;
+    const { storeid, date } = req.body;
 
-    if (!storeId || !date) {
+    if (!storeid || !date) {
         return res.status(400).json({ message: 'Store ID and date are required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND date = ?`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, date]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1 AND date = $2`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid, date]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching transactions by date:', error);
         res.status(500).json({ message: 'Server error' });
@@ -60,16 +61,16 @@ const getTransactionsByDate = async (req, res) => {
 
 // Get transactions for a specific period
 const getTransactionsByPeriod = async (req, res) => {
-    const { storeId, startDate, endDate } = req.params;
+    const { storeid, startDate, endDate } = req.body;
 
-    if (!storeId || !startDate || !endDate) {
+    if (!storeid || !startDate || !endDate) {
         return res.status(400).json({ message: 'Store ID, start date, and end date are required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND date BETWEEN ? AND ?`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, startDate, endDate]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1 AND date BETWEEN $2 AND $3`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid, startDate, endDate]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching transactions by period:', error);
         res.status(500).json({ message: 'Server error' });
@@ -78,16 +79,16 @@ const getTransactionsByPeriod = async (req, res) => {
 
 // Get transactions for a specific customer
 const getTransactionsByCustomer = async (req, res) => {
-    const { storeId, customerId } = req.params;
+    const { storeid, customerid } = req.body;
 
-    if (!storeId || !customerId) {
+    if (!storeid || !customerid) {
         return res.status(400).json({ message: 'Store ID and customer ID are required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND customerId = ?`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId, customerId]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1 AND "customerid" = $2`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid, customerid]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching transactions by customer:', error);
         res.status(500).json({ message: 'Server error' });
@@ -96,16 +97,16 @@ const getTransactionsByCustomer = async (req, res) => {
 
 // Get all credit transactions
 const getAllCreditTransactions = async (req, res) => {
-    const { storeId } = req.params;
+    const { storeid } = req.body;
 
-    if (!storeId) {
+    if (!storeid) {
         return res.status(400).json({ message: 'Store ID is required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND type = 'credit'`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1 AND type = 'credit'`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching credit transactions:', error);
         res.status(500).json({ message: 'Server error' });
@@ -114,16 +115,16 @@ const getAllCreditTransactions = async (req, res) => {
 
 // Get all debit transactions
 const getAllDebitTransactions = async (req, res) => {
-    const { storeId } = req.params;
+    const { storeid } = req.body;
 
-    if (!storeId) {
+    if (!storeid) {
         return res.status(400).json({ message: 'Store ID is required' });
     }
 
     try {
-        const getTransactionsQuery = `SELECT * FROM transaction WHERE storeId = ? AND type = 'debit'`;
-        const [rows] = await promisePool.query(getTransactionsQuery, [storeId]);
-        res.status(200).json({ transactions: rows });
+        const getTransactionsQuery = `SELECT * FROM transaction WHERE "storeid" = $1 AND type = 'debit'`;
+        const result = await postgresPool.query(getTransactionsQuery, [storeid]);
+        res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching debit transactions:', error);
         res.status(500).json({ message: 'Server error' });

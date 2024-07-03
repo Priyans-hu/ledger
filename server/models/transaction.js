@@ -1,24 +1,24 @@
-const { promisePool } = require('../config/');
+const { postgresPool } = require('../config');
 
 const createTransactionTable = async () => {
     try {
         const createTransactionTableQuery = `
-            CREATE TABLE IF NOT EXISTS transaction (
-                transactionId INT AUTO_INCREMENT PRIMARY KEY,
-                amount DECIMAL(10, 2) NOT NULL,
+            CREATE TABLE IF NOT EXISTS "transaction" (
+                transactionId SERIAL PRIMARY KEY,
+                amount NUMERIC(10, 2) NOT NULL,
                 description TEXT,
                 date DATE,
-                type ENUM('debit', 'credit') NOT NULL,
-                method ENUM('cash', 'upi', 'neft', 'cheque') NOT NULL,
+                type VARCHAR(10) CHECK(type IN ('debit', 'credit')) NOT NULL,
+                method VARCHAR(10) CHECK(method IN ('cash', 'upi', 'neft', 'cheque')) NOT NULL,
                 storeId INT NOT NULL,
                 customerId INT,
                 createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                FOREIGN KEY (storeId) REFERENCES store(id),
-                FOREIGN KEY (customerId) REFERENCES customer(customerId)
+                updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `;
-        await promisePool.query(createTransactionTableQuery);
+        const client = await postgresPool.connect();
+        await client.query(createTransactionTableQuery);
+        client.release();
         console.log('Transaction table created successfully');
     } catch (error) {
         console.error('Error creating Transaction table:', error);
