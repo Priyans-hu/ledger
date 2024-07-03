@@ -12,7 +12,9 @@ const hashPassword = async (password) => {
 
 // Register controller
 const registerStore = async (req, res) => {
-    const { storeName, phoneNumber, auth } = req.body;
+    const { storeName, phoneNumber, password } = req.body;
+
+    const auth = password;
 
     if (!storeName || !phoneNumber || !auth) {
         return res.status(400).json({ message: 'All fields are required' });
@@ -37,7 +39,9 @@ const registerStore = async (req, res) => {
 
 // Login controller
 const loginStore = async (req, res) => {
-    const { phoneNumber, auth } = req.body;
+    const { phoneNumber, password } = req.body;
+
+    const auth = password;
 
     if (!phoneNumber || !auth) {
         return res.status(400).json({ message: 'All fields are required' });

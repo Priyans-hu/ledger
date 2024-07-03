@@ -1,4 +1,3 @@
-// index.js or server.js
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -9,7 +8,21 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:8080',
+    'http://localhost:3000',
+    'http://192.168.1.87:3000',
+];
+
+const corsOptions = {
+    origin: (origin, callback) => {
+        const isAllowed = allowedOrigins.includes(origin) || !origin;
+        callback(null, isAllowed);
+    },
+    credentials: true, // Enable credentials (e.g., cookies, HTTP authentication)
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 
