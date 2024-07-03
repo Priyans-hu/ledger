@@ -49,33 +49,45 @@ const Dashboard = () => {
             <div className='min-h-[80vh]'>
                 <Container maxWidth="md" className="text-center my-16">
                     <Typography variant="h3" className="my-12 font-bold">Dashboard</Typography>
-                    
+
                     <Typography variant="h5" className="my-8 font-bold text-left">Customer</Typography>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                    <div className="flex flex-col md:flex-row mt-8 mb-16">
                         {cards.customer.map((card, index) => (
                             <Paper
                                 key={index}
-                                className="p-6 text-center hover:shadow-lg transition duration-300 ease-in-out max-w-xs w-full md:max-w-md mx-auto cursor-pointer"
+                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-md mx-auto cursor-pointer my-4 md:my-auto"
                                 onClick={() => handleNavigation(card.link)}
                             >
-                                <div className="text-gray-400 my-2">{card.icon}</div>
-                                <Typography variant="h6" className="text-black font-bold mt-4 mb-2">{card.title}</Typography>
-                                <Typography variant="body2" className="text-gray-600">{card.description}</Typography>
+                                <div className='flex'>
+                                    <div className='flex items-center justify-center mx-4'>
+                                        <div className="text-gray-400 m-2">{card.icon}</div>
+                                    </div>
+                                    <div>
+                                        <Typography variant="h6" className="text-black font-bold mt-4 mb-2">{card.title}</Typography>
+                                        <Typography variant="body2" className="text-gray-600">{card.description}</Typography>
+                                    </div>
+                                </div>
                             </Paper>
                         ))}
                     </div>
 
                     <Typography variant="h5" className="my-8 font-bold text-left">Transactions</Typography>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="flex flex-col md:flex-row mt-8 mb-16">
                         {cards.transactions.map((card, index) => (
                             <Paper
                                 key={index}
-                                className="p-6 text-center hover:shadow-lg transition duration-300 ease-in-out max-w-xs w-full md:max-w-md mx-auto cursor-pointer"
+                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-md mx-auto cursor-pointer my-4 md:my-auto"
                                 onClick={() => handleNavigation(card.link)}
                             >
-                                <div className="text-gray-400 my-2">{card.icon}</div>
-                                <Typography variant="h6" className="text-black font-bold mt-4 mb-2">{card.title}</Typography>
-                                <Typography variant="body2" className="text-gray-600">{card.description}</Typography>
+                                <div className='flex'>
+                                    <div className='flex items-center justify-center mx-4'>
+                                        <div className="text-gray-400 m-2">{card.icon}</div>
+                                    </div>
+                                    <div>
+                                        <Typography variant="h6" className="text-black font-bold mt-4 mb-2">{card.title}</Typography>
+                                        <Typography variant="body2" className="text-gray-600">{card.description}</Typography>
+                                    </div>
+                                </div>
                             </Paper>
                         ))}
                     </div>
