@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.REACT_APP_BASE_URL;
 class CustomerAPI {
     constructor() {
         this.customerApi = axios.create({
-            baseURL: `${API_BASE_URL}/customer`,
+            baseURL: `${API_BASE_URL}/api/customer`,
             withCredentials: true,
         });
     }

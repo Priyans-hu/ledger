@@ -5,7 +5,7 @@ const API_BASE_URL = process.env.REACT_APP_BASE_URL;
 class StoreAPI {
     constructor() {
         this.storeApi = axios.create({
-            baseURL: `${API_BASE_URL}/store`,
+            baseURL: `${API_BASE_URL}/api/store`,
             withCredentials: true,
         });
     }
