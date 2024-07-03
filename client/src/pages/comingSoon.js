@@ -1,5 +1,5 @@
 import React from 'react'
-import Footer from '../components/Footer'
+import Footer from '../components/landing/Footer'
 import ComingSoonComp from '../components/comingSoon'
 
 const comingSoon = () => {

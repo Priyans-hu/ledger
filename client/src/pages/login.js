@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import useAuth from '../hooks/useAuth'; 
-import { toast } from 'react-toastify'; 
-import 'react-toastify/dist/ReactToastify.css'; 
+import useAuth from '../hooks/useAuth';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const { login, error } = useAuth();
+    const navigate = useNavigate();
 
     const initialValues = {
         phoneNumber: '',
@@ -25,9 +26,14 @@ const Login = () => {
 
     const handleSubmit = async (values) => {
         try {
-            await login(values);
-            toast.success('Login successful!');
-            // Optionally, redirect to dashboard or another page after successful login
+            const response = await login(values);
+            console.log(response);
+            if (response?.data) {
+                toast.success('Login successful!');
+                navigate('/dashboard');
+            } else {
+                throw new Error('Invalid response data');
+            }
         } catch (error) {
             console.error('Login error:', error);
             toast.error('Login failed! Please try again.');

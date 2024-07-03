@@ -1,13 +1,13 @@
 import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import Features from '../components/Features';
-import Testimonials from '../components/Testimonials';
-import Highlights from '../components/Highlights';
-import Pricing from '../components/Pricing';
-import FAQ from '../components/FAQ';
+import Header from '../components/landing/Header';
+import Footer from '../components/landing/Footer';
+import Features from '../components/landing/Features';
+import Testimonials from '../components/landing/Testimonials';
+import Highlights from '../components/landing/Highlights';
+import Pricing from '../components/landing/Pricing';
+import FAQ from '../components/landing/FAQ';
 import { Divider } from '@mui/material';
-import Hero from '../components/Hero';
+import Hero from '../components/landing/Hero';
 
 function App() {
     return (

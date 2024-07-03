@@ -1,6 +1,6 @@
 import React from 'react'
 import PageNotFoundComp from '../components/pageNotFound'
-import Footer from '../components/Footer'
+import Footer from '../components/landing/Footer'
 
 const pageNotFound = () => {
     return (
