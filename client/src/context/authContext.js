@@ -1,47 +1,60 @@
-import React, { createContext, useState } from 'react';
-import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_BASE_URL;
-
-const axiosInstance = axios.create({
-    baseURL: API_BASE_URL,
-    withCredentials: true,
-});
+import React, { createContext, useState, useEffect } from 'react';
+import storeApiInstance from '../api/storeApi';
 
 export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Optionally, you can implement a function to check if the user is already logged in
+        // For example, by checking a token in local storage or a session
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            try {
+                setUser(JSON.parse(storedUser));
+            } catch (error) {
+                console.error('Error parsing stored user', error);
+                localStorage.removeItem('user');
+            }
+        }
+        setLoading(false);
+    }, []);
 
     const login = async (credentials) => {
         try {
-            const response = await axiosInstance.post('/stores/login', credentials);
+            const response = await storeApiInstance.loginStore(credentials);
+            console.log(response);
             setUser(response.data.user);
-            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
         } catch (error) {
-            setError(error.response.data.message);
+            console.error('Login error', error);
+            throw error;
         }
     };
 
-    const register = async (userData) => {
+    const register = async (storeData) => {
         try {
-            const response = await axiosInstance.post('/stores/register', userData);
+            const response = await storeApiInstance.registerStore(storeData);
             setUser(response.data.user);
-            localStorage.setItem('accessToken', response.data.accessToken);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
         } catch (error) {
-            setError(error.response.data.message);
+            console.error('Register error', error);
+            throw error;
         }
     };
 
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('accessToken');
+        localStorage.removeItem('user');
     };
 
     return (
-        <AuthContext.Provider value={{ user, error, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
+export default AuthProvider;

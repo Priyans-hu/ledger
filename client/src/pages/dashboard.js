@@ -48,14 +48,16 @@ const Dashboard = () => {
             <Header />
             <div className='min-h-[80vh]'>
                 <Container maxWidth="md" className="text-center my-16">
-                    <Typography variant="h3" className="my-12 font-bold">Dashboard</Typography>
+                    <div className='my-16'>
+                        <Typography variant="h3" className="my-12 font-bold">Dashboard</Typography>
+                    </div>
 
                     <Typography variant="h5" className="my-8 font-bold text-left">Customer</Typography>
                     <div className="flex flex-col md:flex-row mt-8 mb-16">
                         {cards.customer.map((card, index) => (
                             <Paper
                                 key={index}
-                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-md mx-auto cursor-pointer my-4 md:my-auto"
+                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-sm mx-auto cursor-pointer my-4 md:my-auto"
                                 onClick={() => handleNavigation(card.link)}
                             >
                                 <div className='flex'>
@@ -76,7 +78,7 @@ const Dashboard = () => {
                         {cards.transactions.map((card, index) => (
                             <Paper
                                 key={index}
-                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-md mx-auto cursor-pointer my-4 md:my-auto"
+                                className="p-6 text-left hover:shadow-lg transition duration-300 ease-in-out w-full md:max-w-sm mx-auto cursor-pointer my-4 md:my-auto"
                                 onClick={() => handleNavigation(card.link)}
                             >
                                 <div className='flex'>
@@ -92,7 +94,9 @@ const Dashboard = () => {
                         ))}
                     </div>
                 </Container>
-                <Typography variant="body2" className="mt-8 text-center text-gray-500">More features coming soon! Stay tuned for updates.</Typography>
+                <div className='pb-16'>
+                    <Typography variant="body2" className="mt-8 text-center text-gray-500">More features coming soon! Stay tuned for updates.</Typography>
+                </div>
             </div>
             <Footer />
         </>

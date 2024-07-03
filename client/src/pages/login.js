@@ -2,12 +2,12 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import useAuth from '../hooks/useAuth';
+import { useAuthActions } from '../hooks/useAuth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
-    const { login, error } = useAuth();
+    const { login } = useAuthActions();
     const navigate = useNavigate();
 
     const initialValues = {
@@ -26,14 +26,9 @@ const Login = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const response = await login(values);
-            console.log(response);
-            if (response?.data) {
-                toast.success('Login successful!');
-                navigate('/dashboard');
-            } else {
-                throw new Error('Invalid response data');
-            }
+            await login(values);
+            toast.success('Login successful!');
+            navigate('/dashboard');
         } catch (error) {
             console.error('Login error:', error);
             toast.error('Login failed! Please try again.');
@@ -53,7 +48,6 @@ const Login = () => {
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={formik.handleSubmit}>
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
                     <div className="rounded-md shadow-sm -space-y-px">
                         <div>
                             <label htmlFor="phoneNumber" className="sr-only">

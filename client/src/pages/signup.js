@@ -1,22 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import useAuth from '../hooks/useAuth'; 
+import { useAuthActions } from '../hooks/useAuth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
-    const { register } = useAuth(); // Destructure register function from useAuth hook
+    const { register } = useAuthActions();
+    const navigate = useNavigate();
 
     const initialValues = {
-        mobileNumber: '',
+        phoneNumber: '',
         password: '',
         storeName: '',
     };
 
     const validationSchema = Yup.object().shape({
-        mobileNumber: Yup.string()
+        phoneNumber: Yup.string()
             .required('Mobile number is required')
             .matches(/^[0-9]{10}$/, 'Mobile number must be 10 digits'),
         password: Yup.string()
@@ -29,9 +30,14 @@ const Signup = () => {
 
     const handleSubmit = async (values) => {
         try {
-            await register(values);
-            toast.success('Registration successful!');
-            // Optionally, redirect to login page after successful registration
+            const result = await register(values);
+            console.log(result);
+            if (result && result.success) {
+                toast.success('Registration successful!');
+                navigate('/login');
+            } else {
+                throw new Error('Registration failed');
+            }
         } catch (error) {
             toast.error('Registration failed! Please try again.');
             console.error('Registration Error:', error);
@@ -74,23 +80,23 @@ const Signup = () => {
                             ) : null}
                         </div>
                         <div>
-                            <label htmlFor="mobileNumber" className="sr-only">
+                            <label htmlFor="phoneNumber" className="sr-only">
                                 Mobile Number
                             </label>
                             <input
-                                id="mobileNumber"
-                                name="mobileNumber"
+                                id="phoneNumber"
+                                name="phoneNumber"
                                 type="text"
                                 autoComplete="tel"
                                 required
                                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="Mobile Number"
-                                value={formik.values.mobileNumber}
+                                value={formik.values.phoneNumber}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             />
-                            {formik.touched.mobileNumber && formik.errors.mobileNumber ? (
-                                <p className="text-red-500 text-xs mt-1">{formik.errors.mobileNumber}</p>
+                            {formik.touched.phoneNumber && formik.errors.phoneNumber ? (
+                                <p className="text-red-500 text-xs mt-1">{formik.errors.phoneNumber}</p>
                             ) : null}
                         </div>
                         <div>

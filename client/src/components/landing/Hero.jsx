@@ -1,4 +1,5 @@
 import React from 'react';
+import landing_image from '../../images/landing.webp';
 
 const Hero = () => {
     return (
@@ -24,7 +25,7 @@ const Hero = () => {
                     </div>
                     <div className="mt-10 lg:mt-10 flex justify-center mx-auto">
                         <img
-                            src="https://khatabook-assets.s3.ap-south-1.amazonaws.com/kb-pwa/top-right-desktop-img-bed1eb2ec0.webp"
+                            src={landing_image}
                             alt="Ledger Dashboard"
                             className="w-full max-w-6xl rounded-lg"
                         />
