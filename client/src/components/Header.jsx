@@ -9,57 +9,86 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Hidden from '@mui/material/Hidden';
 
 const Header = () => {
-    const [open, setOpen] = useState(false);
+    const [openDrawer, setOpenDrawer] = useState(false);
 
     const toggleDrawer = () => {
-        setOpen(!open);
+        setOpenDrawer(!openDrawer);
+    };
+
+    const handleLogout = () => {
+        // Your logout logic here
+        console.log('Logout clicked');
     };
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
-        element.scrollIntoView({ behavior: 'smooth' });
-        setOpen(false);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+        setOpenDrawer(false);
     };
 
     return (
         <AppBar position="static" className="bg-white shadow-md">
             <Toolbar className="container mx-auto flex justify-between">
                 <div className="flex items-center">
-                    <Typography variant="h6" className="text-white font-extrabold">Ledger</Typography>
+                    <Typography variant="h6" className="text-white font-extrabold">
+                        Ledger
+                    </Typography>
                 </div>
-                <div className='hidden lg:flex mx-4'>
-                    <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('features')}>Features</Button>
-                    <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('testimonials')}>Testimonials</Button>
-                    <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('highlights')}>Highlights</Button>
-                    <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('pricing')}>Pricing</Button>
-                    <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('faq')}>FAQ</Button>
-                </div>
-                <div className="hidden lg:flex">
-                    <Link to="/login" style={{ textDecoration: 'none' }}>
-                        <Button color="inherit" className="text-blue-900">Sign In</Button>
-                    </Link>
-                    <Link to="/signup" style={{ textDecoration: 'none' }}>
-                        <Button variant="outlined" color="inherit" className="text-blue-900 border-blue-900 mx-4">Sign Up</Button>
-                    </Link>
-                </div>
-                <div className="lg:hidden">
-                    <IconButton edge="end" color="inherit" aria-label="menu" onClick={toggleDrawer}>
+                <Hidden mdUp>
+                    <IconButton edge="end" color="inherit" onClick={toggleDrawer} aria-label="menu">
                         <MenuIcon />
                     </IconButton>
-                    <Drawer anchor="right" open={open} onClose={() => setOpen(false)}>
+                    <Drawer anchor="right" open={openDrawer} onClose={() => setOpenDrawer(false)}>
                         <List>
-                            <ListItem component="button" onClick={() => { scrollToSection('features') }}>Features</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('testimonials') }}>Testimonials</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('highlights') }}>Highlights</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('pricing') }}>Pricing</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('faq') }}>FAQ</ListItem>
-                            <ListItem component={Link} to="/login" onClick={() => setOpen(false)}>Sign In</ListItem>
-                            <ListItem component={Link} to="/signup" onClick={() => setOpen(false)}>Sign Up</ListItem>
+                            <ListItem button onClick={() => scrollToSection('dashboard')}>
+                                Dashboard
+                            </ListItem>
+                            <ListItem button onClick={() => scrollToSection('customers')}>
+                                Customers
+                            </ListItem>
+                            <ListItem button onClick={() => scrollToSection('transactions')}>
+                                Transactions
+                            </ListItem>
+                            <ListItem button onClick={() => scrollToSection('generate-invoice')}>
+                                Generate Invoice
+                            </ListItem>
+                            <ListItem component={Link} to="/profile" onClick={() => setOpenDrawer(false)}>
+                                <AccountCircleIcon className="mr-2" />
+                                Profile
+                            </ListItem>
+                            <ListItem button onClick={handleLogout}>
+                                Logout
+                            </ListItem>
                         </List>
                     </Drawer>
-                </div>
+                </Hidden>
+                <Hidden smDown>
+                    <div className="hidden lg:flex space-x-6">
+                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('dashboard')}>
+                            Dashboard
+                        </Button>
+                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('customers')}>
+                            Customers
+                        </Button>
+                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('transactions')}>
+                            Transactions
+                        </Button>
+                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('generate-invoice')}>
+                            Generate Invoice
+                        </Button>
+                    </div>
+                    <div className="hidden lg:flex items-center">
+                        <Button color="inherit" onClick={handleLogout}>
+                            Logout
+                        </Button>
+                    </div>
+                </Hidden>
             </Toolbar>
         </AppBar>
     );
