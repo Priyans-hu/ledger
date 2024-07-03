@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -36,8 +37,12 @@ const Header = () => {
                     <Button color="inherit" className="text-gray-400" onClick={() => scrollToSection('faq')}>FAQ</Button>
                 </div>
                 <div className="hidden lg:flex">
-                    <Button color="inherit" className="text-blue-900">Sign In</Button>
-                    <Button variant="outlined" color="inherit" className="text-blue-900 border-blue-900 mx-4">Sign Up</Button>
+                    <Link to="/login" style={{ textDecoration: 'none' }}>
+                        <Button color="inherit" className="text-blue-900">Sign In</Button>
+                    </Link>
+                    <Link to="/signup" style={{ textDecoration: 'none' }}>
+                        <Button variant="outlined" color="inherit" className="text-blue-900 border-blue-900 mx-4">Sign Up</Button>
+                    </Link>
                 </div>
                 <div className="lg:hidden">
                     <IconButton edge="end" color="inherit" aria-label="menu" onClick={toggleDrawer}>
@@ -50,8 +55,8 @@ const Header = () => {
                             <ListItem component="button" onClick={() => { scrollToSection('highlights') }}>Highlights</ListItem>
                             <ListItem component="button" onClick={() => { scrollToSection('pricing') }}>Pricing</ListItem>
                             <ListItem component="button" onClick={() => { scrollToSection('faq') }}>FAQ</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('signin') }}>Sign In</ListItem>
-                            <ListItem component="button" onClick={() => { scrollToSection('signup') }}>Sign Up</ListItem>
+                            <ListItem component={Link} to="/login" onClick={() => setOpen(false)}>Sign In</ListItem>
+                            <ListItem component={Link} to="/signup" onClick={() => setOpen(false)}>Sign Up</ListItem>
                         </List>
                     </Drawer>
                 </div>
