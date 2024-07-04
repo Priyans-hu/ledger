@@ -48,7 +48,6 @@ const getTransactions = async (req, res) => {
 const getTransactionsByDate = async (req, res) => {
     const { storeid } = req.body;
     const { date } = req.query;
-    console.log(storeid, date);
 
     if (!storeid || !date) {
         return res.status(400).json({ message: 'Store ID and date are required' });
@@ -60,6 +59,30 @@ const getTransactionsByDate = async (req, res) => {
         res.status(200).json({ transactions: result.rows });
     } catch (error) {
         console.error('Error fetching transactions by date:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+// Get transactions for a specific month
+const getTransactionsByMonth = async (req, res) => {
+    const { storeid } = req.body;
+    const { month } = req.query;
+
+    if (!storeid || !month) {
+        return res.status(400).json({ message: 'Store ID and month are required' });
+    }
+
+    try {
+        const getTransactionsQuery = `
+            SELECT * 
+            FROM transaction 
+            WHERE "storeid" = $1 
+            AND EXTRACT(MONTH FROM date) = $2`;
+        
+        const result = await postgresPool.query(getTransactionsQuery, [storeid, month]);
+        res.status(200).json({ transactions: result.rows });
+    } catch (error) {
+        console.error('Error fetching transactions by month:', error);
         res.status(500).json({ message: 'Server error' });
     }
 };
@@ -140,6 +163,7 @@ module.exports = {
     createTransaction,
     getTransactions,
     getTransactionsByDate,
+    getTransactionsByMonth,
     getTransactionsByPeriod,
     getTransactionsByCustomer,
     getAllCreditTransactions,
