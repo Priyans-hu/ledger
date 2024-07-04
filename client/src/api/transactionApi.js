@@ -40,6 +40,14 @@ class TransactionAPI {
         return this.transactionApi.get('/period', { params: { start, end } });
     }
 
+    getTransactionsByMonth(month) {
+        return this.transactionApi.get('/month', { params: { month } });
+    }
+
+    getTransactionsByYear(year) {
+        return this.transactionApi.get('/month', { params: { year } });
+    }
+
     getTransactionsByCustomer(customerId) {
         return this.transactionApi.get('/customer', { params: { customerId } });
     }

@@ -4,6 +4,7 @@ import transactionApi from '../api/transactionApi';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const ManageTransactions = () => {
     const [transactions, setTransactions] = useState([]);
@@ -23,7 +24,7 @@ const ManageTransactions = () => {
             setTransactions(transactions);
             calculateMonthlyTotal(transactions);
         } catch (error) {
-            alert('Failed to fetch transactions');
+            toast.error('Failed to fetch transactions');
         }
     };
 
@@ -34,7 +35,7 @@ const ManageTransactions = () => {
             setTransactions(transactions);
             calculateMonthlyTotal(transactions);
         } catch (error) {
-            alert('Failed to fetch transactions by date');
+            toast.error('Failed to fetch transactions by date');
         }
     };
 
@@ -180,17 +181,25 @@ const ManageTransactions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {transactions.map((transaction, index) => (
-                                <tr key={transaction.transactionid}>
-                                    <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap" style={{ color: transaction.type === 'credit' ? 'green' : 'red' }}>{transaction.amount}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{transaction.description}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{formatDate(transaction.date)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{transaction.type}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{transaction.method}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap">{transaction.customerid || '-'}</td>
+                            {transactions.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="text-center py-4">
+                                        No transactions available
+                                    </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                transactions.map((transaction, index) => (
+                                    <tr key={transaction.transactionid}>
+                                        <td className="px-6 py-4 whitespace-nowrap">{index + 1}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap" style={{ color: transaction.type === 'credit' ? 'green' : 'red' }}>{transaction.amount}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{transaction.description}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{formatDate(transaction.date)}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{transaction.type}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{transaction.method}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">{transaction.customerid || '-'}</td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </TableContainer>
