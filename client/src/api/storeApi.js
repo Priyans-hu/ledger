@@ -17,6 +17,10 @@ class StoreAPI {
     loginStore(credentials) {
         return this.storeApi.post('/login', credentials);
     }
+
+    getUserData(config) {
+        return this.storeApi.get('/', config);
+    };
 }
 
 const storeApiInstance = new StoreAPI();

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/authContext';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -14,14 +15,16 @@ import Hidden from '@mui/material/Hidden';
 
 const Header = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
+    const { logout } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const toggleDrawer = () => {
         setOpenDrawer(!openDrawer);
     };
 
     const handleLogout = () => {
-        // Your logout logic here
-        console.log('Logout clicked');
+        logout();
+        navigate('/');
     };
 
     const scrollToSection = (id) => {

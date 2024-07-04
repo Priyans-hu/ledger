@@ -1,35 +1,44 @@
 import React, { createContext, useState, useEffect } from 'react';
 import storeApiInstance from '../api/storeApi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+    const [token, setToken] = useState(null);
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Optionally, you can implement a function to check if the user is already logged in
-        // For example, by checking a token in local storage or a session
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            try {
-                setUser(JSON.parse(storedUser));
-            } catch (error) {
-                console.error('Error parsing stored user', error);
-                localStorage.removeItem('user');
-            }
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+            // Optionally, fetch user data with the token
+            fetchUserData(storedToken);
         }
         setLoading(false);
     }, []);
 
+    const fetchUserData = async (token) => {
+        try {
+            const response = await storeApiInstance.getUserData({ headers: { Authorization: `Bearer ${token}` } });
+            setUser(response.data.user);
+        } catch (error) {
+            console.error('Error fetching user data', error);
+            logout();
+        }
+    };
+
     const login = async (credentials) => {
         try {
             const response = await storeApiInstance.loginStore(credentials);
-            console.log(response);
-            setUser(response.data.user);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            setToken(response.data.token);
+            toast.success('Login successful!');
+            localStorage.setItem('token', response.data.token);
         } catch (error) {
             console.error('Login error', error);
+            toast.error('Login failed! Please try again.');
             throw error;
         }
     };
@@ -37,21 +46,25 @@ const AuthProvider = ({ children }) => {
     const register = async (storeData) => {
         try {
             const response = await storeApiInstance.registerStore(storeData);
-            setUser(response.data.user);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            setToken(response.data.token);
+            toast.success('Registration successful!');
+            localStorage.setItem('token', response.data.token);
         } catch (error) {
             console.error('Register error', error);
+            toast.error('Registration failed! Please try again.');
             throw error;
         }
     };
 
     const logout = () => {
+        setToken(null);
         setUser(null);
-        localStorage.removeItem('user');
+        toast.success('Logout successful!');
+        localStorage.removeItem('token');
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ token, user, loading, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

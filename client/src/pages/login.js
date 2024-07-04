@@ -27,11 +27,9 @@ const Login = () => {
     const handleSubmit = async (values) => {
         try {
             await login(values);
-            toast.success('Login successful!');
             navigate('/dashboard');
         } catch (error) {
             console.error('Login error:', error);
-            toast.error('Login failed! Please try again.');
         }
     };
 

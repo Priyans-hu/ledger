@@ -3,8 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuthActions } from '../hooks/useAuth';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 const Signup = () => {
     const { register } = useAuthActions();
@@ -33,13 +31,11 @@ const Signup = () => {
             const result = await register(values);
             console.log(result);
             if (result && result.success) {
-                toast.success('Registration successful!');
                 navigate('/login');
             } else {
                 throw new Error('Registration failed');
             }
         } catch (error) {
-            toast.error('Registration failed! Please try again.');
             console.error('Registration Error:', error);
         }
     };
