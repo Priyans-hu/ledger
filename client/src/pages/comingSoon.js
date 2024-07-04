@@ -1,14 +1,19 @@
-import React from 'react'
-import Footer from '../components/landing/Footer'
-import ComingSoonComp from '../components/comingSoon'
+import React, { useContext } from 'react';
+import Footer from '../components/landing/Footer';
+import Header from '../components/Header';
+import ComingSoonComp from '../components/comingSoon';
+import { AuthContext } from '../context/authContext';
 
-const comingSoon = () => {
+const ComingSoon = () => {
+    const { token, loading } = useContext(AuthContext);
+
     return (
         <div>
+            {token && !loading && <Header />}
             <ComingSoonComp />
-            <Footer />
+            {token && !loading && <Footer />}
         </div>
-    )
-}
+    );
+};
 
-export default comingSoon
+export default ComingSoon;

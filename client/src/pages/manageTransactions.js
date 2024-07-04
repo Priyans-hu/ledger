@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, TableContainer, Paper, Menu, MenuItem, ListItemText } from '@mui/material';
+import { TextField, Button, TableContainer, Paper, Menu, MenuItem, ListItemText, Select, FormControl, InputLabel } from '@mui/material';
 import transactionApi from '../api/transactionApi';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -12,14 +12,17 @@ const ManageTransactions = () => {
     const [monthlyTotal, setMonthlyTotal] = useState(0);
     const [sortOption, setSortOption] = useState('dateNewToOld');
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedMonth, setSelectedMonth] = useState('');
 
     useEffect(() => {
-        fetchTransactions();
+        const defaultMonth = new Date().getMonth() + 1; // JavaScript months are 0-indexed
+        setSelectedMonth(defaultMonth.toString());
+        fetchTransactions(defaultMonth);
     }, []);
 
-    const fetchTransactions = async () => {
+    const fetchTransactions = async (month) => {
         try {
-            const response = await transactionApi.getAllTransactions();
+            const response = await transactionApi.getTransactionsByMonth(month);
             const transactions = response.data.transactions || [];
             setTransactions(transactions);
             calculateMonthlyTotal(transactions);
@@ -40,14 +43,7 @@ const ManageTransactions = () => {
     };
 
     const calculateMonthlyTotal = (transactions) => {
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
-        const monthlyTransactions = transactions.filter(transaction => {
-            const transactionDate = new Date(transaction.date);
-            return transactionDate.getMonth() === currentMonth && transactionDate.getFullYear() === currentYear;
-        });
-
-        const total = monthlyTransactions.reduce((acc, transaction) => {
+        const total = transactions.reduce((acc, transaction) => {
             const amount = parseFloat(transaction.amount);
             return acc + (transaction.type === 'credit' ? amount : -amount);
         }, 0);
@@ -100,8 +96,16 @@ const ManageTransactions = () => {
     };
 
     const resetFilters = () => {
-        fetchTransactions();
+        const defaultMonth = new Date().getMonth() + 1;
+        setSelectedMonth(defaultMonth.toString());
+        fetchTransactions(defaultMonth);
         setDate('');
+    };
+
+    const handleMonthChange = (event) => {
+        const selectedMonth = event.target.value;
+        setSelectedMonth(selectedMonth);
+        fetchTransactions(selectedMonth);
     };
 
     return (
@@ -110,6 +114,22 @@ const ManageTransactions = () => {
             <div className="container mx-auto my-16 p-4 min-h-[80vh]">
                 <h1 className="text-4xl text-center font-bold mb-8">Manage Transactions</h1>
                 <div className="flex flex-col md:flex-row md:space-x-4 mb-4">
+                    <FormControl className="mb-4 md:mb-0">
+                        <InputLabel id="select-month-label">Select Month</InputLabel>
+                        <Select
+                            labelId="select-month-label"
+                            id="select-month"
+                            value={selectedMonth}
+                            onChange={handleMonthChange}
+                            className="w-full"
+                        >
+                            {Array.from({ length: new Date().getMonth() + 1 }, (_, index) => index + 1).map((month) => (
+                                <MenuItem key={month} value={month.toString()}>
+                                    {new Date(new Date().getFullYear(), month - 1, 1).toLocaleString('default', { month: 'long' })}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <TextField
                         id="date"
                         label="Date"
@@ -124,7 +144,7 @@ const ManageTransactions = () => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={fetchTransactionsByDate}
+                        onClick={fetchTransactionsByDate} // Fix: Added definition for fetchTransactionsByDate
                         className="mb-4 md:mb-0 md:mr-2"
                     >
                         Filter by Date
@@ -134,9 +154,6 @@ const ManageTransactions = () => {
                             Reset Filters
                         </Button>
                     )}
-                    <Button variant="contained" onClick={fetchTransactions} className="mb-4 md:mb-0 md:mr-2">
-                        Show All
-                    </Button>
                     <Button
                         variant="contained"
                         color="secondary"
@@ -207,7 +224,9 @@ const ManageTransactions = () => {
                     <h2 className="text-2xl font-bold">Monthly Total: {monthlyTotal}</h2>
                 </div>
                 <div className="flex justify-end mt-4">
-                    <Link to='/add-transaction'>
+                    <Link to='/
+
+add-transaction'>
                         <Button variant="contained" color="secondary">
                             Add Transaction
                         </Button>

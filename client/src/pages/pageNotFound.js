@@ -1,14 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react';
+import Footer from '../components/landing/Footer';
+import Header from '../components/Header';
 import PageNotFoundComp from '../components/pageNotFound'
-import Footer from '../components/landing/Footer'
+import { AuthContext } from '../context/authContext';
 
-const pageNotFound = () => {
+const PageNotFound = () => {
+    const { token, loading } = useContext(AuthContext);
+
     return (
         <div>
+            {token && !loading && <Header />}
             <PageNotFoundComp />
-            <Footer />
+            {token && !loading && <Footer />}
         </div>
     )
 }
 
-export default pageNotFound
+export default PageNotFound;
