@@ -3,11 +3,14 @@ const { postgresPool } = require('../config/');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
-    const { amount, description, date, type, method, storeid, customerid } = req.body;
+    let { amount, description, date, type, method, storeid, customerid } = req.body;
 
     if (!amount || !type || !method || !storeid) {
         return res.status(400).json({ message: 'Amount, type, method, and storeid are required' });
     }
+
+    amount = parseInt(amount, 10);
+    customerid = customerid ? parseInt(customerid, 10) : null;
 
     try {
         const createTransactionQuery = `
@@ -43,7 +46,9 @@ const getTransactions = async (req, res) => {
 
 // Get transactions for a specific date
 const getTransactionsByDate = async (req, res) => {
-    const { storeid, date } = req.body;
+    const { storeid } = req.body;
+    const { date } = req.query;
+    console.log(storeid, date);
 
     if (!storeid || !date) {
         return res.status(400).json({ message: 'Store ID and date are required' });
