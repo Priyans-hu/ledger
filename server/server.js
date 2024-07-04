@@ -12,6 +12,7 @@ const allowedOrigins = [
     'http://localhost:8080',
     'http://localhost:3000',
     'http://192.168.1.87:3000',
+    'https://ledger-yqdz.onrender.com'
 ];
 
 const corsOptions = {
