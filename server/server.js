@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const { postgresPool } = require('./config');
+const decodeTokenMiddleware = require('./middleware/authenticate');
 
 dotenv.config();
 
@@ -34,8 +35,8 @@ const transactionRoutes = require('./routes/transactionRoutes');
 
 // Use routes
 app.use('/api/store', storeRoutes);
-app.use('/api/customer', customerRoutes);
-app.use('/api/transaction', transactionRoutes);
+app.use('/api/customer', decodeTokenMiddleware, customerRoutes);
+app.use('/api/transaction', decodeTokenMiddleware, transactionRoutes);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Ledger API');
