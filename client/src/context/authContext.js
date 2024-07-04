@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import storeApiInstance from '../api/storeApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
 
 export const AuthContext = createContext();
 
@@ -11,30 +12,19 @@ const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
+        const storedToken = Cookies.get('token');
         if (storedToken) {
             setToken(storedToken);
-            fetchUserData(storedToken);
         }
         setLoading(false);
     }, []);
-
-    const fetchUserData = async (token) => {
-        try {
-            const response = await storeApiInstance.getUserData({ headers: { Authorization: `Bearer ${token}` } });
-            setUser(response.data.user);
-        } catch (error) {
-            console.error('Error fetching user data', error);
-            logout();
-        }
-    };
 
     const login = async (credentials) => {
         try {
             const response = await storeApiInstance.loginStore(credentials);
             setToken(response.data.token);
             toast.success('Login successful!');
-            localStorage.setItem('token', response.data.token);
+            Cookies.set('token', response.data.token, { expires: 1 });
         } catch (error) {
             console.error('Login error', error);
             if (error.response && error.response.data && error.response.data.message === 'Invalid credentials') {
@@ -51,7 +41,7 @@ const AuthProvider = ({ children }) => {
             const response = await storeApiInstance.registerStore(storeData);
             setToken(response.data.token);
             toast.success('Registration successful!');
-            localStorage.setItem('token', response.data.token);
+            Cookies.set('token', response.data.token, { expires: 1 });
         } catch (error) {
             console.error('Register error', error);
             if (error.response && error.response.data && error.response.data.message === 'account already exists') {
@@ -67,7 +57,7 @@ const AuthProvider = ({ children }) => {
         setToken(null);
         setUser(null);
         toast.success('Logout successful!');
-        localStorage.removeItem('token');
+        Cookies.remove('token');
     };
 
     return (

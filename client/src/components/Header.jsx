@@ -27,11 +27,8 @@ const Header = () => {
         navigate('/');
     };
 
-    const scrollToSection = (id) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+    const handleNavigation = (path) => {
+        navigate(path);
         setOpenDrawer(false);
     };
 
@@ -49,16 +46,16 @@ const Header = () => {
                     </IconButton>
                     <Drawer anchor="right" open={openDrawer} onClose={() => setOpenDrawer(false)}>
                         <List>
-                            <ListItem button onClick={() => scrollToSection('dashboard')}>
+                            <ListItem button onClick={() => handleNavigation('/dashboard')}>
                                 Dashboard
                             </ListItem>
-                            <ListItem button onClick={() => scrollToSection('customers')}>
+                            <ListItem button onClick={() => handleNavigation('/view-customers')}>
                                 Customers
                             </ListItem>
-                            <ListItem button onClick={() => scrollToSection('transactions')}>
+                            <ListItem button onClick={() => handleNavigation('/manage-transactions')}>
                                 Transactions
                             </ListItem>
-                            <ListItem button onClick={() => scrollToSection('generate-invoice')}>
+                            <ListItem button onClick={() => handleNavigation('/generate-invoice')}>
                                 Generate Invoice
                             </ListItem>
                             <ListItem component={Link} to="/profile" onClick={() => setOpenDrawer(false)}>
@@ -73,16 +70,16 @@ const Header = () => {
                 </Hidden>
                 <Hidden smDown>
                     <div className="hidden lg:flex space-x-6">
-                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('dashboard')}>
+                        <Button color="inherit" className="text-gray-600" onClick={() => handleNavigation('/dashboard')}>
                             Dashboard
                         </Button>
-                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('customers')}>
+                        <Button color="inherit" className="text-gray-600" onClick={() => handleNavigation('/view-customers')}>
                             Customers
                         </Button>
-                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('transactions')}>
+                        <Button color="inherit" className="text-gray-600" onClick={() => handleNavigation('/manage-transactions')}>
                             Transactions
                         </Button>
-                        <Button color="inherit" className="text-gray-600" onClick={() => scrollToSection('generate-invoice')}>
+                        <Button color="inherit" className="text-gray-600" onClick={() => handleNavigation('/generate-invoice')}>
                             Generate Invoice
                         </Button>
                     </div>

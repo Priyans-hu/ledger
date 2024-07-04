@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -8,6 +9,19 @@ class TransactionAPI {
             baseURL: `${API_BASE_URL}/api/transaction`,
             withCredentials: true,
         });
+
+        this.transactionApi.interceptors.request.use(
+            (config) => {
+                const token = Cookies.get('token');
+                if (token) {
+                    config.headers.Authorization = `Bearer ${token}`;
+                }
+                return config;
+            },
+            (error) => {
+                return Promise.reject(error);
+            }
+        );
     }
 
     createTransaction(transactionData) {

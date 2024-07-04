@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useAuthActions } from '../hooks/useAuth';
 import { FiEye, FiEyeOff } from 'react-icons/fi'; 
-import { ClipLoader } from 'react-spinners';
 
 const Login = () => {
     const { login } = useAuthActions();
