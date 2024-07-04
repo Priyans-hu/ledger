@@ -14,7 +14,6 @@ const AuthProvider = ({ children }) => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
             setToken(storedToken);
-            // Optionally, fetch user data with the token
             fetchUserData(storedToken);
         }
         setLoading(false);
@@ -38,7 +37,11 @@ const AuthProvider = ({ children }) => {
             localStorage.setItem('token', response.data.token);
         } catch (error) {
             console.error('Login error', error);
-            toast.error('Login failed! Please try again.');
+            if (error.response && error.response.data && error.response.data.message === 'Invalid credentials') {
+                toast.error('Invalid credentials! Please try again.');
+            } else {
+                toast.error('Login failed! Please try again.');
+            }
             throw error;
         }
     };
@@ -51,7 +54,11 @@ const AuthProvider = ({ children }) => {
             localStorage.setItem('token', response.data.token);
         } catch (error) {
             console.error('Register error', error);
-            toast.error('Registration failed! Please try again.');
+            if (error.response && error.response.data && error.response.data.message === 'account already exists') {
+                toast.error('An account with this phone number already exists. Please try with a different phone number.');
+            } else {
+                toast.error('Registration failed! Please try again.');
+            }
             throw error;
         }
     };

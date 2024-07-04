@@ -21,7 +21,18 @@ const registerStore = async (req, res) => {
     }
 
     try {
+        const checkStoreQuery = `
+            SELECT * FROM store
+            WHERE phoneNumber = $1
+        `;
+        const { rows: existingStores } = await postgresPool.query(checkStoreQuery, [phoneNumber]);
+
+        if (existingStores.length > 0) {
+            return res.status(400).json({ message: 'account already exists' });
+        }
+
         const hashedPassword = await hashPassword(auth);
+
         const createStoreQuery = `
             INSERT INTO store (storeName, phoneNumber, auth)
             VALUES ($1, $2, $3)
