@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { postgresPool } = require('../config/');
+const { format, subMonths, lastDayOfMonth } = require('date-fns');
 
 // Create a new transaction
 const createTransaction = async (req, res) => {
@@ -105,6 +106,50 @@ const getTransactionsByPeriod = async (req, res) => {
     }
 };
 
+const getNumberOfTransactionsInPast12months = async (req, res) => {
+    const { storeid } = req.body;
+
+    if (!storeid) {
+        return res.status(400).json({ message: 'Store ID is required' });
+    }
+
+    try {
+        // Create an array of the last 12 months
+        const months = [];
+        for (let i = 0; i < 12; i++) {
+            const date = subMonths(new Date(), i);
+            months.push(format(date, 'yyyy-MM'));
+        }
+
+        // Query the database for each month
+        const monthlyTransactionCounts = await Promise.all(
+            months.map(async (month) => {
+                const [year, monthNumber] = month.split('-');
+                const startDate = `${year}-${monthNumber}-01`;
+                const endDate = format(lastDayOfMonth(new Date(startDate)), 'yyyy-MM-dd');
+
+                const getTransactionCountQuery = `
+                    SELECT COUNT(*) AS count
+                    FROM transaction
+                    WHERE "storeid" = $1
+                    AND date BETWEEN $2 AND $3
+                `;
+                const result = await postgresPool.query(getTransactionCountQuery, [storeid, startDate, endDate]);
+                return {
+                    month,
+                    count: parseInt(result.rows[0].count, 10),
+                };
+            })
+        );
+
+        // Return the results
+        res.status(200).json({ monthlyTransactionCounts });
+    } catch (error) {
+        console.error('Error fetching number of transactions in past 12 months:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
 // Get transactions for a specific customer
 const getTransactionsByCustomer = async (req, res) => {
     const { storeid, customerid } = req.body;
@@ -166,6 +211,7 @@ module.exports = {
     getTransactionsByMonth,
     getTransactionsByPeriod,
     getTransactionsByCustomer,
+    getNumberOfTransactionsInPast12months,
     getAllCreditTransactions,
     getAllDebitTransactions
 };

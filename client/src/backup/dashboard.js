@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Container, Paper, Box, Select, MenuItem, Grid } from '@mui/material';
+import { Typography, Container, Paper, Box, Select, MenuItem } from '@mui/material';
 import { MonetizationOn, LibraryBooks } from '@mui/icons-material';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import transactionApi from '../api/transactionApi';
@@ -12,6 +12,7 @@ import CardComponent from '../components/CardComponent';
 import SectionHeading from '../components/SectionHeading';
 import { filterByThisMonth, filterByLastMonth, filterByLast90Days, filterByThisYear, calculateDebitTotal, calculateCreditTotal } from '../helpers/transactionFilters';
 
+// Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const Dashboard = () => {
@@ -20,11 +21,11 @@ const Dashboard = () => {
     const [totalTransactions, setTotalTransactions] = useState(0);
     const [totalDebit, setTotalDebit] = useState(0);
     const [totalCredit, setTotalCredit] = useState(0);
-    const [monthlyTransactionCounts, setMonthlyTransactionCounts] = useState([]);
-
+    const [monthlyTransactions, setMonthlyTransactions] = useState([]);
+    
     useEffect(() => {
         fetchTransactionMetrics(selectedPeriod);
-        fetchMonthlyTransactionCounts();
+        fetchMonthlyTransactions();
     }, [selectedPeriod]);
 
     const fetchTransactionMetrics = async (period) => {
@@ -57,18 +58,17 @@ const Dashboard = () => {
             setTotalTransactions(filteredTransactions.length);
             setTotalDebit(debitTotal.toFixed(2));
             setTotalCredit(creditTotal.toFixed(2));
-
         } catch (error) {
             console.error('Failed to fetch transaction metrics', error);
         }
     };
 
-    const fetchMonthlyTransactionCounts = async () => {
+    const fetchMonthlyTransactions = async () => {
         try {
-            const response = await transactionApi.getMonthlyTransactions();
-            setMonthlyTransactionCounts(response.data.monthlyTransactionCounts);
+            const response = await transactionApi.getMonthlyTransactions(); // Assuming this API endpoint exists
+            setMonthlyTransactions(response.data.monthlyTransactions || []);
         } catch (error) {
-            console.error('Failed to fetch monthly transaction counts', error);
+            console.error('Failed to fetch monthly transactions', error);
         }
     };
 
@@ -81,12 +81,12 @@ const Dashboard = () => {
     };
 
     const barData = {
-        labels: monthlyTransactionCounts.map(item => item.month),
+        labels: monthlyTransactions.map((month) => month.name),
         datasets: [
             {
                 label: 'Number of Transactions',
-                data: monthlyTransactionCounts.map(item => item.count),
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                data: monthlyTransactions.map((month) => month.transactionCount),
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
             },
@@ -94,19 +94,14 @@ const Dashboard = () => {
     };
 
     const pieData = {
-        labels: ['Total Debit', 'Total Credit'],
+        labels: ['Debit', 'Credit'],
         datasets: [
             {
                 data: [totalDebit, totalCredit],
-                backgroundColor: ['#ff6384', '#36a2eb'],
-                hoverBackgroundColor: ['#ff6384', '#36a2eb'],
+                backgroundColor: ['#ff9800', '#4caf50'],
+                hoverBackgroundColor: ['#ffa726', '#66bb6a'],
             },
         ],
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
     };
 
     return (
@@ -134,23 +129,6 @@ const Dashboard = () => {
                             <MenuItem value="thisYear">This Year</MenuItem>
                         </Select>
                     </div>
-
-                    {/* Charts */}
-                    <Grid container spacing={2} className="my-16">
-                        <Grid item xs={12} md={6}>
-                            <Paper className="p-4" style={{ height: '400px' }}>
-                                <Typography variant="h6" className="text-left mb-4">Transactions in the Past 12 Months</Typography>
-                                <Bar data={barData} options={chartOptions} />
-                            </Paper>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Paper className="p-4" style={{ height: '400px' }}>
-                                <Typography variant="h6" className="text-left mb-4">Credit vs Debit</Typography>
-                                <Pie data={pieData} options={chartOptions} />
-                            </Paper>
-                        </Grid>
-                    </Grid>
-
                     <div className="flex flex-col md:flex-row mt-8 mb-16">
                         {/* Total Transactions */}
                         <Box sx={{ flexGrow: 1 }}>
@@ -198,6 +176,18 @@ const Dashboard = () => {
                         </Box>
                     </div>
 
+                    {/* Bar Chart for Number of Transactions */}
+                    <div className='my-8'>
+                        <Typography variant="h5" className="my-8 font-bold text-left">Transactions Over the Past 12 Months</Typography>
+                        <Bar data={barData} options={{ responsive: true }} />
+                    </div>
+
+                    {/* Pie Chart for Credit and Debit */}
+                    <div className='my-8'>
+                        <Typography variant="h5" className="my-8 font-bold text-left">Credit vs Debit</Typography>
+                        <Pie data={pieData} options={{ responsive: true }} />
+                    </div>
+
                     {/* Transactions Cards */}
                     <SectionHeading title="Transactions" />
                     <div className="flex flex-col md:flex-row mt-8 mb-16">
@@ -213,8 +203,6 @@ const Dashboard = () => {
                             <CardComponent key={index} card={card} onClick={handleNavigation} />
                         ))}
                     </div>
-
-
                 </Container>
             </div>
             <Footer />

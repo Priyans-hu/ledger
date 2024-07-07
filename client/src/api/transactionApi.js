@@ -59,6 +59,10 @@ class TransactionAPI {
     getAllDebitTransactions() {
         return this.transactionApi.get('/debit');
     }
+
+    getMonthlyTransactions() {
+        return this.transactionApi.get('/past12months');
+    }
 }
 
 const transactionApiInstance = new TransactionAPI();
