@@ -6,29 +6,23 @@ import Testimonials from '../components/landing/Testimonials';
 import Highlights from '../components/landing/Highlights';
 import Pricing from '../components/landing/Pricing';
 import FAQ from '../components/landing/FAQ';
-import { Divider } from '@mui/material';
 import Hero from '../components/landing/Hero';
 
-function App() {
+function Landing() {
     return (
-        <div className="min-h-screen flex flex-col">
+        <div className="min-h-screen bg-white">
             <Header />
-            <main className="flex-grow">
-                <section className=""><Hero /></section>
-                <section className="py-16 px-4" id='features'><Features /></section>
-                <Divider/>
-                <section className="bg-gray-100 py-16 px-4" id='testimonials'><Testimonials /></section>
-                <Divider/>
-                <section className="bg-gray-950 text-white py-16 px-4" id='highlights'><Highlights /></section>
-                <Divider/>
-                <section className="py-16 px-4" id='pricing'><Pricing /></section>
-                <Divider/>
-                <section className="py-16 px-4" id='faq'><FAQ /></section>
-                <Divider/>
+            <main>
+                <Hero />
+                <section id="features"><Features /></section>
+                <section id="testimonials"><Testimonials /></section>
+                <section id="highlights"><Highlights /></section>
+                <section id="pricing"><Pricing /></section>
+                <section id="faq"><FAQ /></section>
             </main>
             <Footer />
         </div>
     );
 }
 
-export default App;
+export default Landing;
