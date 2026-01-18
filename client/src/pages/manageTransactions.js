@@ -224,9 +224,7 @@ const ManageTransactions = () => {
                     <h2 className="text-2xl font-bold">Monthly Total: {monthlyTotal}</h2>
                 </div>
                 <div className="flex justify-end mt-4">
-                    <Link to='/
-
-add-transaction'>
+                    <Link to="/add-transaction">
                         <Button variant="contained" color="secondary">
                             Add Transaction
                         </Button>
