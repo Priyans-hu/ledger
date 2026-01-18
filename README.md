@@ -1,172 +1,165 @@
-# **📒 Ledger**
+# Ledger
 
-**Ledger** is a comprehensive web application designed to streamline shop management for shopkeepers. With features like customer management, expense tracking, invoice generation, payment tracking, and detailed sales analytics, Ledger aims to simplify and enhance the daily operations of small businesses.
+A modern shop management system for small businesses. Track customers, manage transactions, generate invoices, and analyze your business performance.
 
-![Ledger Banner](banner.avif)
+![CI](https://github.com/Priyans-hu/ledger/actions/workflows/ci.yml/badge.svg)
 
-## **✨ Features**
+## Features
 
-- **Customer Management**: Maintain detailed customer profiles and track their purchase history.
-- **Expense Management**: Keep an accurate record of all operational expenses.
-- **Invoice/Bill Generation**: Generate invoices for one or multiple items, supporting both GST and non-GST bills.
-- **Payment Tracking**: Monitor payments received and made, with detailed transaction records.
-- **Dashboard**: Visualize monthly and daily sales data through an intuitive dashboard.
-- **Profit Tracking**: Analyze profits on a daily, monthly, and weekly basis.
-- **User Authentication**: Secure user login and registration, ensuring data privacy and protection.
+- **Customer Management** - Add, edit, delete customers with search and filtering
+- **Transaction Tracking** - Record credits and debits with expense categorization
+- **Invoice Generation** - Create GST-compliant invoices with multiple items
+- **Dashboard Analytics** - Visualize monthly revenue, expenses, and trends
+- **Profile Management** - Update store information and change password
+- **Data Export** - Export transactions to CSV for external analysis
+- **Secure Authentication** - JWT-based auth with token refresh
 
-## **🛠 Tech Stack**
+## Tech Stack
 
-- **Frontend**: React, Tailwind CSS, Material-UI
-- **Backend**: Node.js, Express.js
-- **Database**: MongoDB, PostgreSQL
-- **Authentication**: Firebase Authentication (optional)
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, Material-UI 5, Tailwind CSS 3, React Router 6 |
+| Backend | Node.js 20, Express 4, PostgreSQL 16 |
+| Security | Helmet, Express Rate Limit, Express Validator, bcryptjs |
+| Forms | Formik, Yup |
+| CI/CD | GitHub Actions |
 
-## **📁 Project Structure**
+## Project Structure
 
 ```
 ledger/
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
-│   ├── .env
-│   ├── app.js
-│   └── server.js
-├── frontend/
-│   ├── public/
+├── client/                 # React frontend
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── styles/
-│   │   ├── App.js
-│   │   └── index.js
-├── .gitignore
-├── README.md
-├── package.json
-└── package-lock.json
+│   │   ├── api/           # API client modules
+│   │   ├── components/    # Reusable UI components
+│   │   ├── context/       # React context providers
+│   │   └── pages/         # Page components
+│   └── package.json
+├── server/                 # Express backend
+│   ├── config/            # Database and app config
+│   ├── controllers/       # Route handlers
+│   ├── middleware/        # Auth, validation, rate limiting
+│   ├── models/            # PostgreSQL table schemas
+│   ├── routes/            # API route definitions
+│   └── package.json
+└── .github/workflows/     # CI/CD pipeline
 ```
 
-## **🚀 Getting Started**
+## Getting Started
 
-### **Prerequisites**
+### Prerequisites
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-- MongoDB
-- PostgreSQL
+- Node.js 20+
+- PostgreSQL 16+
+- npm 10+
 
-### **Backend Setup**
+### Database Setup
 
-1. **Clone the repository:**
+```sql
+CREATE DATABASE ledger;
+```
 
-    ```bash
-    git clone https://github.com/yourusername/ledger.git
-    cd ledger/backend
-    ```
+### Server Setup
 
-2. **Install dependencies:**
+```bash
+cd server
+cp .env.example .env
+# Edit .env with your database credentials
+npm install
+npm run dev
+```
 
-    ```bash
-    npm install
-    ```
+### Client Setup
 
-3. **Create a `.env` file in the `backend` directory and add the following:**
+```bash
+cd client
+cp .env.example .env
+npm install
+npm start
+```
 
-    ```env
-    PORT=5000
-    MONGO_URI=your_mongodb_uri
-    POSTGRES_URI=your_postgresql_uri
-    JWT_SECRET=your_jwt_secret
-    ```
+The app will be available at `http://localhost:3000`
 
-4. **Run the backend server:**
+## Environment Variables
 
-    ```bash
-    npm start
-    ```
+### Server (.env)
 
-### **Frontend Setup**
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PORT` | Server port | `5000` |
+| `DB_HOST` | PostgreSQL host | `localhost` |
+| `DB_PORT` | PostgreSQL port | `5432` |
+| `DB_USER` | Database user | - |
+| `DB_PASSWORD` | Database password | - |
+| `DB_NAME` | Database name | `ledger` |
+| `JWT_SECRET` | JWT signing secret | - |
 
-1. **Navigate to the frontend directory:**
+### Client (.env)
 
-    ```bash
-    cd ledger/frontend
-    ```
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `REACT_APP_API_URL` | Backend API URL | `http://localhost:5000/api` |
 
-2. **Install dependencies:**
+## API Endpoints
 
-    ```bash
-    npm install
-    ```
+### Authentication
+- `POST /api/store/register` - Register new store
+- `POST /api/store/login` - Login
+- `GET /api/store/profile` - Get profile
+- `PUT /api/store/profile` - Update profile
+- `PUT /api/store/change-password` - Change password
 
-3. **Run the frontend server:**
+### Customers
+- `GET /api/customers` - List all customers
+- `POST /api/customers` - Create customer
+- `GET /api/customers/:id` - Get customer
+- `PUT /api/customers/:id` - Update customer
+- `DELETE /api/customers/:id` - Delete customer
 
-    ```bash
-    npm start
-    ```
+### Transactions
+- `GET /api/transactions` - List transactions
+- `POST /api/transactions` - Create transaction
+- `PUT /api/transactions/:id` - Update transaction
+- `DELETE /api/transactions/:id` - Delete transaction
+- `GET /api/transactions/export` - Export to CSV
 
-### **Running the Project**
+### Invoices
+- `GET /api/invoices` - List invoices
+- `POST /api/invoices` - Create invoice
+- `GET /api/invoices/:id` - Get invoice
+- `PUT /api/invoices/:id` - Update invoice
+- `DELETE /api/invoices/:id` - Delete invoice
 
-1. **Ensure MongoDB and PostgreSQL are running.**
-2. **Start the backend server (in `backend` directory):**
+## Scripts
 
-    ```bash
-    npm start
-    ```
+### Server
+```bash
+npm run dev      # Development with hot reload
+npm start        # Production
+npm test         # Run tests
+npm run lint     # Lint code
+```
 
-3. **Start the frontend server (in `frontend` directory):**
+### Client
+```bash
+npm start        # Development server
+npm run build    # Production build
+npm test         # Run tests
+npm run lint     # Lint code
+```
 
-    ```bash
-    npm start
-    ```
+## Contributing
 
-4. **Open your browser and navigate to:**
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feat/amazing-feature`)
+3. Commit your changes (`git commit -m 'feat: add amazing feature'`)
+4. Push to the branch (`git push origin feat/amazing-feature`)
+5. Open a Pull Request
 
-    ```url
-    http://localhost:3000
-    ```
+## License
 
-## **🌟 Contributing**
+MIT License - see [LICENSE](LICENSE) for details.
 
-We welcome contributions from the community! To get started:
+## Contact
 
-1. **Fork the repository**: Click on the 'Fork' button at the top right of this page.
-2. **Clone your fork**: 
-
-    ```bash
-    git clone https://github.com/yourusername/ledger.git
-    ```
-
-3. **Create a new branch**: 
-
-    ```bash
-    git checkout -b feature-branch
-    ```
-
-4. **Make your changes**: Add new features, fix bugs, improve documentation.
-5. **Commit your changes**: 
-
-    ```bash
-    git commit -am 'Add new feature'
-    ```
-
-6. **Push to your branch**: 
-
-    ```bash
-    git push origin feature-branch
-    ```
-
-7. **Open a pull request**: Go to the original repository and click the 'New pull request' button.
-
-## **📄 License**
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## **📬 Contact**
-
-For any inquiries, please contact [priyans-hu](https://www.linkedin.com/in/priyans-hu).
-
-## **💖 Support**
-
-If you like this project, please consider giving it a ⭐ on [GitHub](https://github.com/priyans-hu/ledger)!
+Priyanshu - [LinkedIn](https://www.linkedin.com/in/priyans-hu) - [GitHub](https://github.com/Priyans-hu)
