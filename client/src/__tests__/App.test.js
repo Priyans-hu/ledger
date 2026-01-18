@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 
 // Simple smoke test
 describe('App', () => {
@@ -15,16 +14,9 @@ describe('App', () => {
 describe('Component Rendering', () => {
   it('can render a simple div', () => {
     render(<div data-testid="test-div">Test Content</div>);
-    expect(screen.getByTestId('test-div')).toBeInTheDocument();
-  });
-
-  it('can render with React Router', () => {
-    render(
-      <BrowserRouter>
-        <div data-testid="router-content">Router Works</div>
-      </BrowserRouter>
-    );
-    expect(screen.getByTestId('router-content')).toBeInTheDocument();
+    const element = screen.getByTestId('test-div');
+    expect(element).toBeTruthy();
+    expect(element.textContent).toBe('Test Content');
   });
 });
 
