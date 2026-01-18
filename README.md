@@ -28,7 +28,6 @@
 
 <p align="center">
   <a href="#features">Features</a> •
-  <a href="#demo">Demo</a> •
   <a href="#quick-start">Quick Start</a> •
   <a href="#documentation">Documentation</a> •
   <a href="#contributing">Contributing</a>
@@ -80,14 +79,6 @@ All in a modern, easy-to-use web application that works on any device.
 - Password hashing with bcrypt
 - Rate limiting to prevent abuse
 - Protected API routes
-
-## Demo
-
-| Landing Page | Dashboard | Invoice |
-|:---:|:---:|:---:|
-| ![Landing](https://via.placeholder.com/300x200?text=Landing+Page) | ![Dashboard](https://via.placeholder.com/300x200?text=Dashboard) | ![Invoice](https://via.placeholder.com/300x200?text=Invoice) |
-
-> **Note**: Replace placeholder images with actual screenshots
 
 ## Tech Stack
 
@@ -313,18 +304,6 @@ npm run build    # Production build
 npm test         # Run tests
 npm run lint     # Lint code
 ```
-
-## Roadmap
-
-- [ ] Multi-language support (Hindi, Marathi, Tamil)
-- [ ] Offline mode with sync
-- [ ] Mobile app (React Native)
-- [ ] Inventory management
-- [ ] Barcode/QR code scanning
-- [ ] Payment gateway integration
-- [ ] WhatsApp invoice sharing
-- [ ] GST return reports
-- [ ] Multi-store support
 
 ## Contributing
 
