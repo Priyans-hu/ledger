@@ -21,7 +21,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import TransactionModal from '../components/TransactionModal';
 import ConfirmDialog from '../components/ConfirmDialog';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const ManageTransactions = () => {
@@ -29,7 +28,6 @@ const ManageTransactions = () => {
   const [date, setDate] = useState('');
   const [monthlyTotal, setMonthlyTotal] = useState(0);
   const [summary, setSummary] = useState({ totalCredit: 0, totalDebit: 0 });
-  const [sortOption, setSortOption] = useState('dateNewToOld');
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -45,6 +43,7 @@ const ManageTransactions = () => {
     const defaultMonth = new Date().getMonth() + 1;
     setSelectedMonth(defaultMonth.toString());
     fetchTransactions(defaultMonth, selectedYear);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedYear]);
 
   const fetchTransactions = async (month, year) => {
@@ -92,7 +91,6 @@ const ManageTransactions = () => {
   };
 
   const handleSortOption = (option) => {
-    setSortOption(option);
     handleSortTransactions(option);
     setAnchorEl(null);
   };

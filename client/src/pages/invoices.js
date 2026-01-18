@@ -21,7 +21,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  Paper
+  Paper,
+  CircularProgress
 } from '@mui/material';
 import { Add, Delete, Visibility, Receipt, CheckCircle } from '@mui/icons-material';
 import { Formik, Form, Field, FieldArray } from 'formik';
@@ -135,6 +136,18 @@ const Invoices = () => {
     const total = subtotal - discount + taxAmount;
     return { subtotal, taxAmount, total };
   };
+
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <main className="min-h-screen flex justify-center items-center">
+          <CircularProgress />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div>
