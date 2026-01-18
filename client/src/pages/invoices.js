@@ -24,7 +24,8 @@ import {
   Paper,
   CircularProgress
 } from '@mui/material';
-import { Add, Delete, Visibility, Receipt, CheckCircle } from '@mui/icons-material';
+import { Add, Delete, Visibility, Receipt, CheckCircle, PictureAsPdf } from '@mui/icons-material';
+import html2pdf from 'html2pdf.js';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import invoiceApiInstance from '../api/invoiceApi';
@@ -137,6 +138,80 @@ const Invoices = () => {
     return { subtotal, taxAmount, total };
   };
 
+  const handleExportPDF = (invoice) => {
+    const totals = calculateTotals(invoice.items || [], invoice.taxRate, invoice.discount);
+
+    const content = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="margin: 0; color: #1976d2;">INVOICE</h1>
+          <p style="color: #666; margin: 5px 0;">#${invoice.invoiceNumber || invoice.invoiceId}</p>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+          <div>
+            <h3 style="margin: 0 0 10px 0;">Bill To:</h3>
+            <p style="margin: 0;">${invoice.customerName || 'Walk-in Customer'}</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date(invoice.createdAt).toLocaleDateString()}</p>
+            <p style="margin: 5px 0;"><strong>Due Date:</strong> ${invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : '-'}</p>
+            <p style="margin: 5px 0;"><strong>Status:</strong> ${invoice.status?.toUpperCase()}</p>
+          </div>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+          <thead>
+            <tr style="background: #f5f5f5;">
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Item</th>
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Qty</th>
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Unit Price</th>
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${(invoice.items || []).map(item => `
+              <tr>
+                <td style="padding: 12px; border: 1px solid #ddd;">${item.description}</td>
+                <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+                <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">₹${item.unitPrice?.toFixed(2)}</td>
+                <td style="padding: 12px; border: 1px solid #ddd; text-align: right;">₹${(item.quantity * item.unitPrice)?.toFixed(2)}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+
+        <div style="text-align: right;">
+          <p style="margin: 5px 0;"><strong>Subtotal:</strong> ₹${totals.subtotal.toFixed(2)}</p>
+          ${invoice.discount > 0 ? `<p style="margin: 5px 0;"><strong>Discount:</strong> -₹${invoice.discount?.toFixed(2)}</p>` : ''}
+          ${invoice.taxRate > 0 ? `<p style="margin: 5px 0;"><strong>Tax (${invoice.taxRate}%):</strong> ₹${totals.taxAmount.toFixed(2)}</p>` : ''}
+          <p style="margin: 10px 0; font-size: 1.2em;"><strong>Total:</strong> ₹${totals.total.toFixed(2)}</p>
+        </div>
+
+        ${invoice.notes ? `
+          <div style="margin-top: 30px; padding: 15px; background: #f9f9f9; border-radius: 5px;">
+            <h4 style="margin: 0 0 10px 0;">Notes:</h4>
+            <p style="margin: 0; color: #666;">${invoice.notes}</p>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    const element = document.createElement('div');
+    element.innerHTML = content;
+
+    const options = {
+      margin: 10,
+      filename: `invoice_${invoice.invoiceNumber || invoice.invoiceId}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(options).from(element).save();
+    toast.success('PDF downloaded successfully');
+  };
+
   if (loading) {
     return (
       <div>
@@ -247,6 +322,14 @@ const Invoices = () => {
                           data-testid={`invoice-view-btn-${invoice.invoiceId}`}
                         >
                           <Visibility />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleExportPDF(invoice)}
+                          color="secondary"
+                          size="small"
+                          data-testid={`invoice-pdf-btn-${invoice.invoiceId}`}
+                        >
+                          <PictureAsPdf />
                         </IconButton>
                         {invoice.status !== 'paid' && invoice.status !== 'cancelled' && (
                           <IconButton
@@ -507,6 +590,14 @@ const Invoices = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setViewDialogOpen(false)}>Close</Button>
+          <Button
+            variant="outlined"
+            startIcon={<PictureAsPdf />}
+            onClick={() => handleExportPDF(selectedInvoice)}
+            data-testid="invoice-dialog-pdf-btn"
+          >
+            Export PDF
+          </Button>
           {selectedInvoice?.status !== 'paid' && selectedInvoice?.status !== 'cancelled' && (
             <Button
               variant="contained"
