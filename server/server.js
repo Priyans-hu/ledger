@@ -89,11 +89,19 @@ if (process.env.NODE_ENV !== 'production') {
 // Apply general rate limiting
 app.use('/api/', limiter);
 
-// Health check endpoint
+// Health check endpoints
 app.get('/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'API is healthy',
     timestamp: new Date().toISOString()
   });
 });
