@@ -9,7 +9,8 @@ import {
   FormControl,
   InputLabel,
   Box,
-  Tooltip
+  Tooltip,
+  Pagination
 } from '@mui/material';
 import { Search, Edit, Delete, Add } from '@mui/icons-material';
 import customerApiInstance from '../api/customerApi';
@@ -24,7 +25,7 @@ const ViewCustomers = () => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [order, setOrder] = useState('asc');
-  const [pagination, setPagination] = useState({ total: 0, limit: 100, offset: 0 });
+  const [pagination, setPagination] = useState({ total: 0, limit: 10, offset: 0, page: 1 });
 
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
@@ -101,6 +102,16 @@ const ViewCustomers = () => {
       toast.error(message);
     }
   };
+
+  const handlePageChange = (event, newPage) => {
+    setPagination(prev => ({
+      ...prev,
+      page: newPage,
+      offset: (newPage - 1) * prev.limit
+    }));
+  };
+
+  const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   if (customers === null) {
     return (
@@ -200,63 +211,78 @@ const ViewCustomers = () => {
               )}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
-                <thead className="bg-gray-100 text-gray-800">
-                  <tr>
-                    <th className="px-6 py-3 text-left font-bold">Name</th>
-                    <th className="px-6 py-3 text-left font-bold">Phone</th>
-                    <th className="px-6 py-3 text-left font-bold">Email</th>
-                    <th className="px-6 py-3 text-left font-bold">Address</th>
-                    <th className="px-6 py-3 text-left font-bold">Total Spent</th>
-                    <th className="px-6 py-3 text-center font-bold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {customers.map((customer) => (
-                    <tr key={customer.customerId} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap font-medium">
-                        {customer.name}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {customer.phoneNumber}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {customer.email || '-'}
-                      </td>
-                      <td className="px-6 py-4 max-w-xs truncate">
-                        {customer.address}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-green-600 font-medium">
-                        ₹{customer.totalSpent?.toFixed(2) || '0.00'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center">
-                        <Tooltip title="Edit">
-                          <IconButton
-                            onClick={() => handleEditCustomer(customer)}
-                            color="primary"
-                            size="small"
-                            data-testid={`customer-edit-btn-${customer.customerId}`}
-                          >
-                            <Edit />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton
-                            onClick={() => handleDeleteClick(customer)}
-                            color="error"
-                            size="small"
-                            data-testid={`customer-delete-btn-${customer.customerId}`}
-                          >
-                            <Delete />
-                          </IconButton>
-                        </Tooltip>
-                      </td>
+            <>
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
+                  <thead className="bg-gray-100 text-gray-800">
+                    <tr>
+                      <th className="px-6 py-3 text-left font-bold">Name</th>
+                      <th className="px-6 py-3 text-left font-bold">Phone</th>
+                      <th className="px-6 py-3 text-left font-bold">Email</th>
+                      <th className="px-6 py-3 text-left font-bold">Address</th>
+                      <th className="px-6 py-3 text-left font-bold">Total Spent</th>
+                      <th className="px-6 py-3 text-center font-bold">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {customers.map((customer) => (
+                      <tr key={customer.customerId} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium">
+                          {customer.name}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {customer.phoneNumber}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {customer.email || '-'}
+                        </td>
+                        <td className="px-6 py-4 max-w-xs truncate">
+                          {customer.address}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-green-600 font-medium">
+                          ₹{customer.totalSpent?.toFixed(2) || '0.00'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-center">
+                          <Tooltip title="Edit">
+                            <IconButton
+                              onClick={() => handleEditCustomer(customer)}
+                              color="primary"
+                              size="small"
+                              data-testid={`customer-edit-btn-${customer.customerId}`}
+                            >
+                              <Edit />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete">
+                            <IconButton
+                              onClick={() => handleDeleteClick(customer)}
+                              color="error"
+                              size="small"
+                              data-testid={`customer-delete-btn-${customer.customerId}`}
+                            >
+                              <Delete />
+                            </IconButton>
+                          </Tooltip>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {totalPages > 1 && (
+                <Box className="flex justify-center mt-6">
+                  <Pagination
+                    count={totalPages}
+                    page={pagination.page}
+                    onChange={handlePageChange}
+                    color="primary"
+                    showFirstButton
+                    showLastButton
+                    data-testid="customer-pagination"
+                  />
+                </Box>
+              )}
+            </>
           )}
         </div>
       </main>
