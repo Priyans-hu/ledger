@@ -1,5 +1,9 @@
 const request = require('supertest');
 
+// Set environment variables before importing anything
+process.env.JWT_SECRET = 'test-jwt-secret';
+process.env.NODE_ENV = 'test';
+
 // Mock the database config before importing app
 jest.mock('../config', () => ({
   postgresPool: {
