@@ -4,47 +4,43 @@ import Cookies from 'js-cookie';
 const API_BASE_URL = process.env.REACT_APP_BASE_URL;
 
 class CustomerAPI {
-    constructor() {
-        this.customerApi = axios.create({
-            baseURL: `${API_BASE_URL}/api/customer`,
-            withCredentials: true,
-        });
+  constructor() {
+    this.api = axios.create({
+      baseURL: `${API_BASE_URL}/api/customer`,
+      withCredentials: true,
+    });
 
-        this.customerApi.interceptors.request.use(
-            (config) => {
-                const token = Cookies.get('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
-    }
+    this.api.interceptors.request.use(
+      (config) => {
+        const token = Cookies.get('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
 
-    createCustomer(customerData) {
-        return this.customerApi.post('/', customerData);
-    }
+  createCustomer(customerData) {
+    return this.api.post('/', customerData);
+  }
 
-    getCustomerById(customerId) {
-        return this.customerApi.get(`/${customerId}`);
-    }
+  getCustomerById(customerId) {
+    return this.api.get(`/${customerId}`);
+  }
 
-    getAllCustomers(storeId) {
-        return this.customerApi.get('/store', {
-            params: { storeId },
-        });
-    }
+  getAllCustomers(params = {}) {
+    return this.api.get('/', { params });
+  }
 
-    updateCustomer(customerId, updatedData) {
-        return this.customerApi.put(`/${customerId}`, updatedData);
-    }
+  updateCustomer(customerId, updatedData) {
+    return this.api.put(`/${customerId}`, updatedData);
+  }
 
-    deleteCustomer(customerId) {
-        return this.customerApi.delete(`/${customerId}`);
-    }
+  deleteCustomer(customerId) {
+    return this.api.delete(`/${customerId}`);
+  }
 }
 
 const customerApiInstance = new CustomerAPI();

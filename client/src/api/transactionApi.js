@@ -4,65 +4,78 @@ import Cookies from 'js-cookie';
 const API_BASE_URL = process.env.REACT_APP_BASE_URL;
 
 class TransactionAPI {
-    constructor() {
-        this.transactionApi = axios.create({
-            baseURL: `${API_BASE_URL}/api/transaction`,
-            withCredentials: true,
-        });
+  constructor() {
+    this.api = axios.create({
+      baseURL: `${API_BASE_URL}/api/transaction`,
+      withCredentials: true,
+    });
 
-        this.transactionApi.interceptors.request.use(
-            (config) => {
-                const token = Cookies.get('token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
-                }
-                return config;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
-    }
+    this.api.interceptors.request.use(
+      (config) => {
+        const token = Cookies.get('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+  }
 
-    createTransaction(transactionData) {
-        return this.transactionApi.post('/', transactionData);
-    }
+  createTransaction(transactionData) {
+    return this.api.post('/', transactionData);
+  }
 
-    getAllTransactions() {
-        return this.transactionApi.get('/');
-    }
+  updateTransaction(transactionId, transactionData) {
+    return this.api.put(`/${transactionId}`, transactionData);
+  }
 
-    getTransactionsByDate(date) {
-        return this.transactionApi.get('/date', { params: { date } });
-    }
+  deleteTransaction(transactionId) {
+    return this.api.delete(`/${transactionId}`);
+  }
 
-    getTransactionsByPeriod(start, end) {
-        return this.transactionApi.get('/period', { params: { start, end } });
-    }
+  getAllTransactions(params = {}) {
+    return this.api.get('/', { params });
+  }
 
-    getTransactionsByMonth(month) {
-        return this.transactionApi.get('/month', { params: { month } });
-    }
+  getTransactionsByDate(date) {
+    return this.api.get('/date', { params: { date } });
+  }
 
-    getTransactionsByYear(year) {
-        return this.transactionApi.get('/month', { params: { year } });
-    }
+  getTransactionsByMonth(month, year) {
+    return this.api.get('/month', { params: { month, year } });
+  }
 
-    getTransactionsByCustomer(customerId) {
-        return this.transactionApi.get('/customer', { params: { customerId } });
-    }
+  getTransactionsByPeriod(startDate, endDate) {
+    return this.api.get('/period', { params: { startDate, endDate } });
+  }
 
-    getAllCreditTransactions() {
-        return this.transactionApi.get('/credit');
-    }
+  getTransactionsByCustomer(customerId) {
+    return this.api.get(`/customer/${customerId}`);
+  }
 
-    getAllDebitTransactions() {
-        return this.transactionApi.get('/debit');
-    }
+  getAllCreditTransactions() {
+    return this.api.get('/credit');
+  }
 
-    getMonthlyTransactions() {
-        return this.transactionApi.get('/past12months');
-    }
+  getAllDebitTransactions() {
+    return this.api.get('/debit');
+  }
+
+  getMonthlyTransactions() {
+    return this.api.get('/past12months');
+  }
+
+  exportTransactions(params = {}) {
+    return this.api.get('/export', {
+      params,
+      responseType: params.format === 'csv' ? 'blob' : 'json'
+    });
+  }
+
+  getExpenseSummary(params = {}) {
+    return this.api.get('/expense-summary', { params });
+  }
 }
 
 const transactionApiInstance = new TransactionAPI();
