@@ -23,7 +23,7 @@ We as members, contributors, and leaders pledge to make participation in our com
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at gargpriyanshu2004@gmail.com. All complaints will be reviewed and investigated promptly and fairly.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers at mailpriyanshugarg@gmail.com. All complaints will be reviewed and investigated promptly and fairly.
 
 ## Attribution
 

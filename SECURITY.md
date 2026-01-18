@@ -14,7 +14,7 @@ We take security seriously. If you discover a security vulnerability, please rep
 ### How to Report
 
 1. **Do NOT open a public issue**
-2. Email us at: gargpriyanshu2004@gmail.com
+2. Email us at: mailpriyanshugarg@gmail.com
 3. Include:
    - Description of the vulnerability
    - Steps to reproduce
