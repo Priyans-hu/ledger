@@ -1,0 +1,90 @@
+# Ledger - LLM Context
+
+> Ledger is an open-source shop management system for Indian small businesses
+
+## What is Ledger?
+
+Ledger is a modern, full-stack web application that helps small shop owners in India manage their daily business operations. It digitizes the traditional "khata" (ledger book) system used by millions of Indian merchants.
+
+## Key Features
+
+- **Customer Management**: Add, edit, and track customer information
+- **Transaction Tracking**: Record credit (udhaar) and debit transactions
+- **Invoice Generation**: Create and export professional invoices as PDF
+- **Dashboard Analytics**: View sales trends, outstanding amounts, and business insights
+- **Data Export**: Export transaction data as CSV for accounting
+
+## Technology
+
+### Frontend
+- React 18 (Create React App)
+- Material-UI v5 for components
+- Tailwind CSS for styling
+- Redux Toolkit for state
+- Chart.js for analytics
+
+### Backend
+- Node.js with Express.js
+- PostgreSQL database
+- JWT authentication
+- RESTful API design
+
+### DevOps
+- Docker & Docker Compose
+- GitHub Actions CI/CD
+- Jest for testing
+
+## Repository Structure
+
+```
+/client     - React frontend application
+/server     - Express.js backend API
+/docker-compose.yml - Container orchestration
+```
+
+## API Overview
+
+Authentication:
+- POST /api/auth/register - Create account
+- POST /api/auth/login - Sign in
+- GET /api/auth/me - Current user
+
+Customers:
+- GET /api/customers - List all
+- POST /api/customers - Create
+- PUT /api/customers/:id - Update
+- DELETE /api/customers/:id - Remove
+
+Transactions:
+- GET /api/transactions - List with pagination
+- POST /api/transactions - Create
+- DELETE /api/transactions/:id - Remove
+- GET /api/transactions/export - CSV/PDF export
+
+Dashboard:
+- GET /api/dashboard/stats - Business metrics
+
+## Use Cases
+
+1. **Shop Owner**: Track daily sales and customer credits
+2. **Accountant**: Export data for tax filing
+3. **Business Analysis**: View trends and insights
+
+## License
+
+MIT License - Free to use, modify, and distribute
+
+## Links
+
+- Repository: https://github.com/Priyans-hu/ledger
+- Issues: https://github.com/Priyans-hu/ledger/issues
+
+## Contributing
+
+Contributions welcome! See CONTRIBUTING.md for guidelines.
+Fork the repo, create a branch, make changes, and submit a PR.
+
+## Contact
+
+- Email: mailpriyanshugarg@gmail.com
+- GitHub: @Priyans-hu
