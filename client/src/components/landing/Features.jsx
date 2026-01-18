@@ -6,37 +6,55 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import LockIcon from '@mui/icons-material/Lock';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DownloadIcon from '@mui/icons-material/Download';
+import CategoryIcon from '@mui/icons-material/Category';
 
 const Features = () => {
     const features = [
         {
             title: 'Customer Management',
-            description: 'Manage your customers efficiently and keep track of all interactions. Easily update contact details, transaction history, and customer notes.',
+            description: 'Full CRUD operations with search, filter, and pagination. Track customer interactions, purchase history, and total spending.',
             icon: <PersonIcon fontSize="large" />,
         },
         {
-            title: 'Expense Management',
-            description: 'Track your expenses and income with ease and accuracy. Categorize expenditures, set budgets, and generate reports to monitor financial health.',
+            title: 'Transaction Tracking',
+            description: 'Record credits and debits with expense categorization. Filter by date, month, or year. Sort and search transactions easily.',
             icon: <AttachMoneyIcon fontSize="large" />,
         },
         {
-            title: 'Profit Tracking',
-            description: 'Monitor your daily, monthly, and weekly profits to stay on top of your business. Gain insights with visual analytics and detailed profit and loss statements.',
-            icon: <BarChartIcon fontSize="large" />,
+            title: 'Expense Categories',
+            description: 'Categorize expenses into rent, utilities, salary, marketing, and more. Get detailed expense breakdowns and category-wise analytics.',
+            icon: <CategoryIcon fontSize="large" />,
         },
         {
-            title: 'Secure Authentication',
-            description: 'Ensure your data is secure with robust user authentication. Multi-factor authentication and encrypted data storage keep your information safe.',
-            icon: <LockIcon fontSize="large" />,
-        },
-        {
-            title: 'Invoice Generation',
-            description: 'Generate detailed GST and non-GST invoices and bills. Customize invoice templates, automate billing processes, and send invoices directly to customers.',
+            title: 'GST Invoice Generation',
+            description: 'Create professional GST-compliant invoices with multiple line items. Add tax rates, discounts, and notes. Track invoice status.',
             icon: <ReceiptIcon fontSize="large" />,
         },
         {
+            title: 'PDF Export',
+            description: 'Export invoices as beautifully formatted PDF documents. Download transaction reports in CSV format for offline analysis.',
+            icon: <PictureAsPdfIcon fontSize="large" />,
+        },
+        {
             title: 'Dashboard Analytics',
-            description: 'Get a comprehensive overview of your sales and performance. Interactive dashboards provide real-time data on sales, expenses, and profitability.',
+            description: 'Interactive charts showing monthly trends, credit vs debit breakdown. Visual insights with Chart.js powered graphs.',
+            icon: <BarChartIcon fontSize="large" />,
+        },
+        {
+            title: 'Data Export',
+            description: 'Export transactions to CSV for spreadsheet analysis. Generate reports for any time period with one click.',
+            icon: <DownloadIcon fontSize="large" />,
+        },
+        {
+            title: 'Secure Authentication',
+            description: 'JWT-based authentication with password hashing. Rate limiting protects against brute force attacks. Profile management included.',
+            icon: <LockIcon fontSize="large" />,
+        },
+        {
+            title: 'Modern Dashboard',
+            description: 'Clean, responsive interface built with Material-UI. Quick access cards for all operations. Mobile-friendly design.',
             icon: <DashboardIcon fontSize="large" />,
         },
     ];
