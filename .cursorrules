@@ -1,0 +1,118 @@
+# Cursor AI Rules for Ledger
+
+You are working on Ledger, a full-stack shop management system built with React and Node.js.
+
+## Project Context
+
+This is an Indian small business management tool (digital khata) with:
+- Customer management
+- Transaction tracking (credits/debits)
+- Invoice generation
+- Financial reporting
+- Dashboard analytics
+
+## Tech Stack
+
+Frontend: React 18, Material-UI v5, Tailwind CSS, Redux Toolkit, Formik, Chart.js
+Backend: Node.js 18+, Express.js, PostgreSQL, JWT auth
+Testing: Jest, React Testing Library, Supertest
+
+## Code Style
+
+### JavaScript/React
+- Use functional components with hooks
+- Prefer arrow functions
+- Use async/await over promises
+- Destructure props and state
+- Keep components under 200 lines
+- Extract reusable logic to custom hooks
+
+### File Organization
+- Components: `/client/src/components/`
+- Pages: `/client/src/pages/`
+- API routes: `/server/routes/`
+- Controllers: `/server/controllers/`
+- DB models: `/server/models/`
+
+### Naming Conventions
+- Components: PascalCase (e.g., `CustomerCard.jsx`)
+- Functions: camelCase (e.g., `getCustomerById`)
+- Constants: UPPER_SNAKE_CASE
+- Files: camelCase for JS, PascalCase for components
+
+### API Response Format
+```javascript
+// Success
+{ success: true, data: {...} }
+
+// Error
+{ success: false, message: "Error description" }
+```
+
+## Best Practices
+
+1. Always validate user inputs (frontend with Yup, backend with express-validator)
+2. Use parameterized SQL queries to prevent injection
+3. Handle loading and error states in UI
+4. Add proper error boundaries
+5. Use environment variables for config
+6. Keep API controllers thin, business logic in services
+
+## Common Patterns
+
+### Protected Route
+```jsx
+<PrivateRoute><Dashboard /></PrivateRoute>
+```
+
+### API Call with Auth
+```javascript
+const response = await axios.get('/api/customers', {
+  headers: { Authorization: `Bearer ${token}` }
+});
+```
+
+### Form with Formik
+```jsx
+<Formik
+  initialValues={{...}}
+  validationSchema={validationSchema}
+  onSubmit={handleSubmit}
+>
+  {({ values, errors, handleChange }) => (
+    <Form>...</Form>
+  )}
+</Formik>
+```
+
+## Do Not
+
+- Don't hardcode API URLs (use env vars)
+- Don't store sensitive data in localStorage
+- Don't skip input validation
+- Don't use inline styles (use Tailwind/MUI)
+- Don't commit .env files
+- Don't use var (use const/let)
+
+## Commands
+
+```bash
+# Client
+cd client && npm start      # Dev server
+cd client && npm test       # Tests
+cd client && npm run build  # Build
+
+# Server
+cd server && npm run dev    # Dev server
+cd server && npm test       # Tests
+
+# Docker
+docker-compose up -d        # Start all
+```
+
+## Currency
+
+All monetary values are in INR (Indian Rupees). Format using:
+```javascript
+new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' })
+```
